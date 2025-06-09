@@ -1,0 +1,1935 @@
+dashboards:
+  mpv2_logs_egress_ANALYSIS:
+    dependsOn:
+      datasets:
+      - mpv2_logs_egress
+    name: mpv2_logs_egress_analysis
+    dashboardId: mediapackage-v2-logs-egress-analysis
+    category: Custom
+    theme: MIDNIGHT
+    data: |-
+      AnalysisDefaults:
+        DefaultNewSheetConfiguration:
+          InteractiveLayoutConfiguration:
+            Grid:
+              CanvasSizeOptions:
+                ScreenCanvasSizeOptions:
+                  OptimizedViewPortWidth: 1600px
+                  ResizeOption: FIXED
+          SheetContentType: INTERACTIVE
+      CalculatedFields:
+      - DataSetIdentifier: mpv2_logs_egress
+        Expression: '{status_code}>=400'
+        Name: Egress Errors
+      - DataSetIdentifier: mpv2_logs_egress
+        Expression: countIf({status_code}, {status_code}>=400) / count({status_code})
+        Name: Error-Rate
+      - DataSetIdentifier: mpv2_logs_egress
+        Expression: countIf({status_code}, {status_code}=200) / count({status_code})
+        Name: Success-Rate
+      - DataSetIdentifier: mpv2_logs_egress
+        Expression: count({request_id})
+        Name: requests_per_second
+      DataSetIdentifierDeclarations:
+      - DataSetArn: arn:aws:quicksight:::dataset/8f03dcef-405c-4809-8801-20e702fe3447
+        Identifier: mpv2_logs_egress
+      FilterGroups:
+      - CrossDataset: SINGLE_DATASET
+        FilterGroupId: c73301df-4936-4ac7-bb9b-1a379be2e408
+        Filters:
+        - CategoryFilter:
+            Column:
+              ColumnName: status_code
+              DataSetIdentifier: mpv2_logs_egress
+            Configuration:
+              FilterListConfiguration:
+                MatchOperator: DOES_NOT_CONTAIN
+                NullOption: NON_NULLS_ONLY
+            FilterId: 4a900f2f-794c-4623-82c0-a69040bc45a9
+        ScopeConfiguration:
+          SelectedSheets:
+            SheetVisualScopingConfigurations:
+            - Scope: SELECTED_VISUALS
+              SheetId: 4d86a067-a867-4f1c-bace-1e417a8eb20c
+              VisualIds:
+              - fcbfe888-f5f7-4fc9-9e52-035215474334
+        Status: ENABLED
+      - CrossDataset: SINGLE_DATASET
+        FilterGroupId: 8e679f11-15fb-4cba-b261-ebe165f8074b
+        Filters:
+        - CategoryFilter:
+            Column:
+              ColumnName: status_code
+              DataSetIdentifier: mpv2_logs_egress
+            Configuration:
+              FilterListConfiguration:
+                MatchOperator: DOES_NOT_CONTAIN
+                NullOption: NON_NULLS_ONLY
+            FilterId: 2429c92a-b365-4643-84d0-ace47d6f4f33
+        ScopeConfiguration:
+          SelectedSheets:
+            SheetVisualScopingConfigurations:
+            - Scope: SELECTED_VISUALS
+              SheetId: 4d86a067-a867-4f1c-bace-1e417a8eb20c
+              VisualIds:
+              - 9e2486f9-c190-4c00-aaf0-7949b595d4be
+        Status: ENABLED
+      - CrossDataset: SINGLE_DATASET
+        FilterGroupId: 657c3d39-3bee-468d-8921-e0342301e1e6
+        Filters:
+        - CategoryFilter:
+            Column:
+              ColumnName: status_code
+              DataSetIdentifier: mpv2_logs_egress
+            Configuration:
+              FilterListConfiguration:
+                CategoryValues:
+                - '200'
+                MatchOperator: DOES_NOT_CONTAIN
+                NullOption: NON_NULLS_ONLY
+            FilterId: 20443f99-cb7e-4fba-bb65-78136ee2059d
+        ScopeConfiguration:
+          SelectedSheets:
+            SheetVisualScopingConfigurations:
+            - Scope: SELECTED_VISUALS
+              SheetId: 4d86a067-a867-4f1c-bace-1e417a8eb20c
+              VisualIds:
+              - ac2606ab-8941-4d71-913b-36106121bf3d
+        Status: ENABLED
+      - CrossDataset: SINGLE_DATASET
+        FilterGroupId: 90013138-5cfb-4b9d-a204-25faa25a50f5
+        Filters:
+        - CategoryFilter:
+            Column:
+              ColumnName: status_code
+              DataSetIdentifier: mpv2_logs_egress
+            Configuration:
+              FilterListConfiguration:
+                CategoryValues:
+                - '200'
+                MatchOperator: DOES_NOT_CONTAIN
+                NullOption: NON_NULLS_ONLY
+            FilterId: e1ed4dc7-1e98-4cf1-bce4-96505f5aa148
+        ScopeConfiguration:
+          SelectedSheets:
+            SheetVisualScopingConfigurations:
+            - Scope: SELECTED_VISUALS
+              SheetId: 4d86a067-a867-4f1c-bace-1e417a8eb20c
+              VisualIds:
+              - 31eb47e7-fc8d-488b-a372-13f2cab101f0
+        Status: ENABLED
+      - CrossDataset: SINGLE_DATASET
+        FilterGroupId: 7acf1599-3763-4424-adcf-685e70559552
+        Filters:
+        - CategoryFilter:
+            Column:
+              ColumnName: channel_id
+              DataSetIdentifier: mpv2_logs_egress
+            Configuration:
+              FilterListConfiguration:
+                MatchOperator: CONTAINS
+                NullOption: NON_NULLS_ONLY
+                SelectAllOptions: FILTER_ALL_VALUES
+            FilterId: 567f5eca-507b-4142-9461-4bc7f20c8d65
+        ScopeConfiguration:
+          SelectedSheets:
+            SheetVisualScopingConfigurations:
+            - Scope: SELECTED_VISUALS
+              SheetId: 4d86a067-a867-4f1c-bace-1e417a8eb20c
+              VisualIds:
+              - 31eb47e7-fc8d-488b-a372-13f2cab101f0
+        Status: ENABLED
+      - CrossDataset: SINGLE_DATASET
+        FilterGroupId: e30a189a-366d-4712-b141-ad3a6cbbb714
+        Filters:
+        - TimeRangeFilter:
+            Column:
+              ColumnName: event_timestamp
+              DataSetIdentifier: mpv2_logs_egress
+            FilterId: 5b82c54b-020b-4b85-b108-55580afd783e
+            IncludeMaximum: true
+            IncludeMinimum: true
+            NullOption: NON_NULLS_ONLY
+            RangeMaximumValue:
+              Parameter: EndDate
+            RangeMinimumValue:
+              Parameter: StartDate
+            TimeGranularity: DAY
+        ScopeConfiguration:
+          AllSheets: {}
+        Status: ENABLED
+      - CrossDataset: SINGLE_DATASET
+        FilterGroupId: 304bfe14-8322-48a9-bf0c-81f284ccf003
+        Filters:
+        - CategoryFilter:
+            Column:
+              ColumnName: channel_id
+              DataSetIdentifier: mpv2_logs_egress
+            Configuration:
+              FilterListConfiguration:
+                MatchOperator: CONTAINS
+                NullOption: NON_NULLS_ONLY
+                SelectAllOptions: FILTER_ALL_VALUES
+            FilterId: c0b8bf0c-a924-4226-a438-d4d1e74b666b
+        ScopeConfiguration:
+          SelectedSheets:
+            SheetVisualScopingConfigurations:
+            - Scope: ALL_VISUALS
+              SheetId: 4d86a067-a867-4f1c-bace-1e417a8eb20c
+        Status: ENABLED
+      - CrossDataset: SINGLE_DATASET
+        FilterGroupId: 027ec854-fcf1-4ef2-a373-ecc033951bad
+        Filters:
+        - CategoryFilter:
+            Column:
+              ColumnName: manifest_type
+              DataSetIdentifier: mpv2_logs_egress
+            Configuration:
+              FilterListConfiguration:
+                MatchOperator: CONTAINS
+                NullOption: NON_NULLS_ONLY
+                SelectAllOptions: FILTER_ALL_VALUES
+            FilterId: c6492ad2-2325-4bce-8c98-8c58d1be6190
+        ScopeConfiguration:
+          SelectedSheets:
+            SheetVisualScopingConfigurations:
+            - Scope: ALL_VISUALS
+              SheetId: 4d86a067-a867-4f1c-bace-1e417a8eb20c
+        Status: ENABLED
+      Options:
+        WeekStart: SUNDAY
+      ParameterDeclarations:
+      - DateTimeParameterDeclaration:
+          DefaultValues:
+            RollingDate:
+              Expression: addDateTime(-1, 'DD', truncDate('DD', now()))
+            StaticValues: []
+          Name: StartDate
+          TimeGranularity: SECOND
+      - DateTimeParameterDeclaration:
+          DefaultValues:
+            RollingDate:
+              Expression: truncDate('DD', now())
+            StaticValues: []
+          Name: EndDate
+          TimeGranularity: SECOND
+      Sheets:
+      - ContentType: INTERACTIVE
+        FilterControls:
+        - Dropdown:
+            DisplayOptions:
+              SelectAllOptions:
+                Visibility: VISIBLE
+            FilterControlId: 085a4ed4-2348-4748-bb7e-4fc0f22714cc
+            SourceFilterId: c0b8bf0c-a924-4226-a438-d4d1e74b666b
+            Title: channel_id equals
+            Type: MULTI_SELECT
+        - Dropdown:
+            DisplayOptions:
+              SelectAllOptions:
+                Visibility: VISIBLE
+            FilterControlId: 21016644-56c1-4c6c-adea-662f39348a04
+            SourceFilterId: c6492ad2-2325-4bce-8c98-8c58d1be6190
+            Title: manifest_type equals
+            Type: MULTI_SELECT
+        Layouts:
+        - Configuration:
+            GridLayout:
+              CanvasSizeOptions:
+                ScreenCanvasSizeOptions:
+                  OptimizedViewPortWidth: 1600px
+                  ResizeOption: FIXED
+              Elements:
+              - ColumnIndex: 0
+                ColumnSpan: 32
+                ElementId: 5bbab071-193a-4116-901f-a17914df5c0c
+                ElementType: TEXT_BOX
+                RowIndex: 0
+                RowSpan: 2
+              - ColumnIndex: 0
+                ColumnSpan: 32
+                ElementId: 2123f00b-3e7d-4322-9154-e09c97dc7d6e
+                ElementType: VISUAL
+                RowIndex: 2
+                RowSpan: 10
+              - ColumnIndex: 0
+                ColumnSpan: 36
+                ElementId: 02e1b076-e8ef-4a18-9ca9-7a1f45c0cada
+                ElementType: VISUAL
+                RowIndex: 12
+                RowSpan: 9
+              - ColumnIndex: 0
+                ColumnSpan: 32
+                ElementId: fc5c3245-a380-43c1-949a-e54034204426
+                ElementType: TEXT_BOX
+                RowIndex: 21
+                RowSpan: 2
+              - ColumnIndex: 0
+                ColumnSpan: 36
+                ElementId: cb9b7567-82f5-4958-acc1-cf658d583ed5
+                ElementType: VISUAL
+                RowIndex: 23
+                RowSpan: 7
+              - ColumnIndex: 0
+                ColumnSpan: 36
+                ElementId: 3b04ca07-d24c-4877-9c0e-5aa5e3fd0def
+                ElementType: VISUAL
+                RowIndex: 30
+                RowSpan: 7
+              - ColumnIndex: 0
+                ColumnSpan: 36
+                ElementId: e22e3670-076c-4ae1-968c-bc0a9a2fe954
+                ElementType: VISUAL
+                RowIndex: 37
+                RowSpan: 7
+              - ColumnIndex: 0
+                ColumnSpan: 36
+                ElementId: e3ff69af-8561-43d3-b1a6-ea59e05377b9
+                ElementType: VISUAL
+                RowIndex: 44
+                RowSpan: 12
+              - ColumnIndex: 0
+                ColumnSpan: 36
+                ElementId: c2213135-8fd7-40a8-a8c2-1c82cfa723c6
+                ElementType: VISUAL
+                RowIndex: 56
+                RowSpan: 12
+              - ColumnIndex: 0
+                ColumnSpan: 36
+                ElementId: 09da86aa-412f-4fb0-9220-3b6d5cb664f6
+                ElementType: TEXT_BOX
+                RowIndex: 68
+                RowSpan: 2
+              - ColumnIndex: 0
+                ColumnSpan: 36
+                ElementId: 400d3240-e121-45f4-8181-1f4eb0775a52
+                ElementType: VISUAL
+                RowIndex: 70
+                RowSpan: 6
+              - ColumnIndex: 0
+                ColumnSpan: 36
+                ElementId: ac2606ab-8941-4d71-913b-36106121bf3d
+                ElementType: VISUAL
+                RowIndex: 76
+                RowSpan: 7
+              - ColumnIndex: 0
+                ColumnSpan: 36
+                ElementId: b7482ef8-10ab-49f5-b425-cd4650909b04
+                ElementType: VISUAL
+                RowIndex: 83
+                RowSpan: 11
+              - ColumnIndex: 0
+                ColumnSpan: 32
+                ElementId: 1130825d-02b3-4efa-967d-b7872d7bf10e
+                ElementType: TEXT_BOX
+                RowIndex: 94
+                RowSpan: 2
+              - ColumnIndex: 0
+                ColumnSpan: 36
+                ElementId: 7bf15839-5dfb-482b-ac1c-9ecabeabe005
+                ElementType: VISUAL
+                RowIndex: 96
+                RowSpan: 7
+              - ColumnIndex: 0
+                ColumnSpan: 36
+                ElementId: 5fc86b13-931f-442a-a740-fbbaf92276cd
+                ElementType: VISUAL
+                RowIndex: 103
+                RowSpan: 8
+              - ColumnIndex: 0
+                ColumnSpan: 36
+                ElementId: e1183a3f-ef51-4ea9-98ff-6933424fcfa6
+                ElementType: VISUAL
+                RowIndex: 111
+                RowSpan: 7
+              - ColumnIndex: 0
+                ColumnSpan: 36
+                ElementId: 19a4d4d2-eba6-4e0a-9a6d-b956797fa317
+                ElementType: TEXT_BOX
+                RowIndex: 118
+                RowSpan: 2
+              - ColumnIndex: 0
+                ColumnSpan: 18
+                ElementId: e7f63c0f-bde1-4924-b942-008ab994fbca
+                ElementType: VISUAL
+                RowIndex: 120
+                RowSpan: 7
+              - ColumnIndex: 18
+                ColumnSpan: 18
+                ElementId: 6043fd0f-a2f2-484c-8ba3-bd59de15898d
+                ElementType: VISUAL
+                RowIndex: 120
+                RowSpan: 7
+              - ColumnIndex: 0
+                ColumnSpan: 27
+                ElementId: 10c09158-abce-4e6f-b438-61ca12a01a85
+                ElementType: TEXT_BOX
+                RowIndex: 127
+                RowSpan: 2
+              - ColumnIndex: 0
+                ColumnSpan: 36
+                ElementId: fcbfe888-f5f7-4fc9-9e52-035215474334
+                ElementType: VISUAL
+                RowIndex: 129
+                RowSpan: 8
+              - ColumnIndex: 0
+                ColumnSpan: 36
+                ElementId: 9e2486f9-c190-4c00-aaf0-7949b595d4be
+                ElementType: VISUAL
+                RowIndex: 137
+                RowSpan: 13
+              - ColumnIndex: 0
+                ColumnSpan: 36
+                ElementId: 31eb47e7-fc8d-488b-a372-13f2cab101f0
+                ElementType: VISUAL
+                RowIndex: 150
+                RowSpan: 7
+        Name: Sheet 1
+        ParameterControls:
+        - DateTimePicker:
+            DisplayOptions:
+              DateIconVisibility: VISIBLE
+              DateTimeFormat: YYYY/MM/DD HH:mm:ss
+              HelperTextVisibility: VISIBLE
+              TitleOptions:
+                FontConfiguration:
+                  FontSize:
+                    Relative: MEDIUM
+                Visibility: VISIBLE
+            ParameterControlId: 5503a0c4-a14f-48b8-ac4a-16c36df38eb5
+            SourceParameterName: StartDate
+            Title: Start-Date
+        - DateTimePicker:
+            DisplayOptions:
+              DateIconVisibility: VISIBLE
+              DateTimeFormat: YYYY/MM/DD HH:mm:ss
+              HelperTextVisibility: VISIBLE
+              TitleOptions:
+                FontConfiguration:
+                  FontSize:
+                    Relative: MEDIUM
+                Visibility: VISIBLE
+            ParameterControlId: 2a3de130-6729-4854-b74e-b8bcb3a13e6c
+            SourceParameterName: EndDate
+            Title: End-Date
+        SheetControlLayouts:
+        - Configuration:
+            GridLayout:
+              Elements:
+              - ColumnSpan: 2
+                ElementId: 5503a0c4-a14f-48b8-ac4a-16c36df38eb5
+                ElementType: PARAMETER_CONTROL
+                RowSpan: 1
+              - ColumnSpan: 2
+                ElementId: 2a3de130-6729-4854-b74e-b8bcb3a13e6c
+                ElementType: PARAMETER_CONTROL
+                RowSpan: 1
+              - ColumnSpan: 2
+                ElementId: 085a4ed4-2348-4748-bb7e-4fc0f22714cc
+                ElementType: FILTER_CONTROL
+                RowSpan: 1
+              - ColumnSpan: 2
+                ElementId: 21016644-56c1-4c6c-adea-662f39348a04
+                ElementType: FILTER_CONTROL
+                RowSpan: 1
+        SheetId: 4d86a067-a867-4f1c-bace-1e417a8eb20c
+        TextBoxes:
+        - Content: |-
+            <text-box>
+              <inline color="#00ff00">
+                <b>Error Rate</b>
+              </inline>
+            </text-box>
+          SheetTextBoxId: 09da86aa-412f-4fb0-9220-3b6d5cb664f6
+        - Content: |-
+            <text-box>
+              <inline color="#00ff00">
+                <b>Performance</b>
+              </inline>
+            </text-box>
+          SheetTextBoxId: 1130825d-02b3-4efa-967d-b7872d7bf10e
+        - Content: |-
+            <text-box>
+              <inline color="#00ff00">
+                <b>Delivery Analysis</b>
+              </inline>
+            </text-box>
+          SheetTextBoxId: 19a4d4d2-eba6-4e0a-9a6d-b956797fa317
+        - Content: |-
+            <text-box>
+              <inline color="#00ff00">
+                <b>User Experience</b>
+              </inline>
+            </text-box>
+          SheetTextBoxId: 10c09158-abce-4e6f-b438-61ca12a01a85
+        - Content: |-
+            <text-box>
+              <inline color="#00ff00">
+                <b>Overview</b>
+              </inline>
+            </text-box>
+          SheetTextBoxId: 5bbab071-193a-4116-901f-a17914df5c0c
+        - Content: |-
+            <text-box>
+              <inline color="#00ff00">
+                <b>Status code Details</b>
+              </inline>
+            </text-box>
+          SheetTextBoxId: fc5c3245-a380-43c1-949a-e54034204426
+        Visuals:
+        - LineChartVisual:
+            Actions: []
+            ChartConfiguration:
+              DataLabels:
+                Overlap: DISABLE_OVERLAP
+                Visibility: HIDDEN
+              FieldWells:
+                LineChartAggregatedFieldWells:
+                  Category:
+                  - DateDimensionField:
+                      Column:
+                        ColumnName: event_timestamp
+                        DataSetIdentifier: mpv2_logs_egress
+                      DateGranularity: SECOND
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.2.1737368498255
+                      HierarchyId: eda3b292-a992-44e3-a9b8-07a5228d11eb
+                  Colors:
+                  - NumericalDimensionField:
+                      Column:
+                        ColumnName: status_code
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.2.1737360214812
+                  Values:
+                  - NumericalMeasureField:
+                      AggregationFunction:
+                        SimpleNumericalAggregation: COUNT
+                      Column:
+                        ColumnName: status_code
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.2.1737360386824
+              Legend:
+                Width: 100px
+              SortConfiguration:
+                CategoryItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                CategorySort:
+                - FieldSort:
+                    Direction: DESC
+                    FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.2.1737368498255
+                ColorItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                SmallMultiplesLimitConfiguration:
+                  OtherCategories: INCLUDE
+              Tooltip:
+                FieldBasedTooltip:
+                  AggregationVisibility: HIDDEN
+                  TooltipFields:
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.2.1737360214812
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.2.1737360214812
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.2.1737368498255
+                      Visibility: VISIBLE
+                  TooltipTitleType: PRIMARY_VALUE
+                SelectedTooltipType: DETAILED
+                TooltipVisibility: VISIBLE
+              Type: LINE
+            ColumnHierarchies:
+            - DateTimeHierarchy:
+                DrillDownFilters: []
+                HierarchyId: eda3b292-a992-44e3-a9b8-07a5228d11eb
+            Subtitle:
+              Visibility: VISIBLE
+            Title:
+              FormatText:
+                RichText: <visual-title>Egress Errors OverTime per Status Code</visual-title>
+              Visibility: VISIBLE
+            VisualId: ac2606ab-8941-4d71-913b-36106121bf3d
+        - LineChartVisual:
+            Actions: []
+            ChartConfiguration:
+              DataLabels:
+                Overlap: DISABLE_OVERLAP
+                Visibility: HIDDEN
+              FieldWells:
+                LineChartAggregatedFieldWells:
+                  Category:
+                  - DateDimensionField:
+                      Column:
+                        ColumnName: event_timestamp
+                        DataSetIdentifier: mpv2_logs_egress
+                      DateGranularity: SECOND
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.3.1737368481814
+                      HierarchyId: b9366493-82f5-4667-a371-bd9fc57b0cd6
+                  Colors:
+                  - CategoricalDimensionField:
+                      Column:
+                        ColumnName: manifest_type
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.manifest_type.3.1737564790086
+                  SmallMultiples:
+                  - NumericalDimensionField:
+                      Column:
+                        ColumnName: status_code
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.3.1737564796781
+                  Values:
+                  - NumericalMeasureField:
+                      AggregationFunction:
+                        SimpleNumericalAggregation: COUNT
+                      Column:
+                        ColumnName: status_code
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.2.1737359892310
+              Legend:
+                Width: 100px
+              SmallMultiplesOptions:
+                PanelConfiguration:
+                  BackgroundVisibility: HIDDEN
+                  Title:
+                    FontConfiguration:
+                      FontDecoration: NONE
+                      FontSize: {}
+                      FontStyle: NORMAL
+                      FontWeight:
+                        Name: NORMAL
+              SortConfiguration:
+                CategoryItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                CategorySort:
+                - FieldSort:
+                    Direction: DESC
+                    FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.3.1737368481814
+                ColorItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                SmallMultiplesLimitConfiguration:
+                  OtherCategories: INCLUDE
+              Tooltip:
+                FieldBasedTooltip:
+                  AggregationVisibility: HIDDEN
+                  TooltipFields:
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.manifest_type.3.1737564790086
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.3.1737564796781
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.3.1737368481814
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.3.1737564796781
+                      Visibility: VISIBLE
+                  TooltipTitleType: PRIMARY_VALUE
+                SelectedTooltipType: DETAILED
+                TooltipVisibility: VISIBLE
+              Type: LINE
+            ColumnHierarchies:
+            - DateTimeHierarchy:
+                DrillDownFilters: []
+                HierarchyId: b9366493-82f5-4667-a371-bd9fc57b0cd6
+            Subtitle:
+              Visibility: VISIBLE
+            Title:
+              FormatText:
+                RichText: <visual-title>Status Code  by Manifest Type</visual-title>
+              Visibility: VISIBLE
+            VisualId: c2213135-8fd7-40a8-a8c2-1c82cfa723c6
+        - LineChartVisual:
+            Actions: []
+            ChartConfiguration:
+              DataLabels:
+                Overlap: DISABLE_OVERLAP
+                Position: BOTTOM
+                Visibility: HIDDEN
+              FieldWells:
+                LineChartAggregatedFieldWells:
+                  Category:
+                  - DateDimensionField:
+                      Column:
+                        ColumnName: event_timestamp
+                        DataSetIdentifier: mpv2_logs_egress
+                      DateGranularity: SECOND
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.2.1737368490130
+                      HierarchyId: aa7d908d-0f52-4af3-8ca1-d52535d5c8fe
+                  Colors: []
+                  SmallMultiples:
+                  - CategoricalDimensionField:
+                      Column:
+                        ColumnName: manifest_type
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.manifest_type.3.1736951825544
+                  Values:
+                  - NumericalMeasureField:
+                      Column:
+                        ColumnName: Error-Rate
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 15f545f9-dbc3-49fe-bccc-1b6251e8f326.3.1736951802868
+                      FormatConfiguration:
+                        FormatConfiguration:
+                          PercentageDisplayFormatConfiguration:
+                            NegativeValueConfiguration:
+                              DisplayMode: NEGATIVE
+                            NullValueFormatConfiguration:
+                              NullString: 'null'
+                            SeparatorConfiguration:
+                              DecimalSeparator: DOT
+                              ThousandsSeparator:
+                                Symbol: COMMA
+                                Visibility: VISIBLE
+                            Suffix: '%'
+              SortConfiguration:
+                CategoryItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                CategorySort:
+                - FieldSort:
+                    Direction: DESC
+                    FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.2.1737368490130
+                ColorItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                SmallMultiplesLimitConfiguration:
+                  OtherCategories: INCLUDE
+              Tooltip:
+                FieldBasedTooltip:
+                  AggregationVisibility: HIDDEN
+                  TooltipFields:
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.manifest_type.3.1736951825544
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 15f545f9-dbc3-49fe-bccc-1b6251e8f326.3.1736951802868
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.2.1737368490130
+                      Visibility: VISIBLE
+                  TooltipTitleType: PRIMARY_VALUE
+                SelectedTooltipType: DETAILED
+                TooltipVisibility: VISIBLE
+              Type: LINE
+            ColumnHierarchies:
+            - DateTimeHierarchy:
+                DrillDownFilters: []
+                HierarchyId: aa7d908d-0f52-4af3-8ca1-d52535d5c8fe
+            Subtitle:
+              Visibility: VISIBLE
+            Title:
+              FormatText:
+                RichText: <visual-title>Error Rate Over Time per Manifest Type</visual-title>
+              Visibility: VISIBLE
+            VisualId: 400d3240-e121-45f4-8181-1f4eb0775a52
+        - LineChartVisual:
+            Actions: []
+            ChartConfiguration:
+              DataLabels:
+                Overlap: DISABLE_OVERLAP
+                Visibility: HIDDEN
+              FieldWells:
+                LineChartAggregatedFieldWells:
+                  Category:
+                  - DateDimensionField:
+                      Column:
+                        ColumnName: event_timestamp
+                        DataSetIdentifier: mpv2_logs_egress
+                      DateGranularity: SECOND
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.3.1737368473013
+                      HierarchyId: c1074073-5b33-43ad-b517-86c98f2556b7
+                  Colors:
+                  - CategoricalDimensionField:
+                      Column:
+                        ColumnName: endpoint_arn
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.endpoint_arn.3.1737564830037
+                  SmallMultiples:
+                  - NumericalDimensionField:
+                      Column:
+                        ColumnName: status_code
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.3.1737564837101
+                  Values:
+                  - NumericalMeasureField:
+                      AggregationFunction:
+                        SimpleNumericalAggregation: COUNT
+                      Column:
+                        ColumnName: status_code
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.2.1736951071547
+              Legend:
+                Position: BOTTOM
+                Width: 100px
+              SortConfiguration:
+                CategoryItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                CategorySort:
+                - FieldSort:
+                    Direction: DESC
+                    FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.3.1737368473013
+                ColorItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                SmallMultiplesLimitConfiguration:
+                  OtherCategories: INCLUDE
+              Tooltip:
+                FieldBasedTooltip:
+                  AggregationVisibility: HIDDEN
+                  TooltipFields:
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.3.1737564837101
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.endpoint_arn.3.1737564830037
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.3.1737368473013
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.3.1737564837101
+                      Visibility: VISIBLE
+                  TooltipTitleType: PRIMARY_VALUE
+                SelectedTooltipType: DETAILED
+                TooltipVisibility: VISIBLE
+              Type: LINE
+            ColumnHierarchies:
+            - DateTimeHierarchy:
+                DrillDownFilters: []
+                HierarchyId: c1074073-5b33-43ad-b517-86c98f2556b7
+            Subtitle:
+              Visibility: VISIBLE
+            Title:
+              FormatText:
+                RichText: <visual-title>Status Code by Endpoint-ARN</visual-title>
+              Visibility: VISIBLE
+            VisualId: e3ff69af-8561-43d3-b1a6-ea59e05377b9
+        - LineChartVisual:
+            Actions: []
+            ChartConfiguration:
+              DataLabels:
+                Overlap: DISABLE_OVERLAP
+                Visibility: HIDDEN
+              FieldWells:
+                LineChartAggregatedFieldWells:
+                  Category:
+                  - DateDimensionField:
+                      Column:
+                        ColumnName: event_timestamp
+                        DataSetIdentifier: mpv2_logs_egress
+                      DateGranularity: SECOND
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.3.1737368448621
+                      HierarchyId: a743f676-6f85-4cab-9a07-064e4ee15e50
+                  Colors:
+                  - CategoricalDimensionField:
+                      Column:
+                        ColumnName: endpoint_id
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.endpoint_id.3.1737564869187
+                  SmallMultiples:
+                  - NumericalDimensionField:
+                      Column:
+                        ColumnName: status_code
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.3.1737564874780
+                  Values:
+                  - NumericalMeasureField:
+                      AggregationFunction:
+                        SimpleNumericalAggregation: COUNT
+                      Column:
+                        ColumnName: status_code
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.2.1736950815195
+              Legend:
+                Position: BOTTOM
+                Width: 100px
+              SortConfiguration:
+                CategoryItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                CategorySort:
+                - FieldSort:
+                    Direction: DESC
+                    FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.3.1737368448621
+                ColorItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                SmallMultiplesLimitConfiguration:
+                  OtherCategories: INCLUDE
+              Tooltip:
+                FieldBasedTooltip:
+                  AggregationVisibility: HIDDEN
+                  TooltipFields:
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.3.1737564874780
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.endpoint_id.3.1737564869187
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.3.1737368448621
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.3.1737564874780
+                      Visibility: VISIBLE
+                  TooltipTitleType: PRIMARY_VALUE
+                SelectedTooltipType: DETAILED
+                TooltipVisibility: VISIBLE
+              Type: LINE
+            ColumnHierarchies:
+            - DateTimeHierarchy:
+                DrillDownFilters: []
+                HierarchyId: a743f676-6f85-4cab-9a07-064e4ee15e50
+            Subtitle:
+              Visibility: VISIBLE
+            Title:
+              FormatText:
+                RichText: <visual-title>Status Code by Endpoint-id</visual-title>
+              Visibility: VISIBLE
+            VisualId: 3b04ca07-d24c-4877-9c0e-5aa5e3fd0def
+        - LineChartVisual:
+            Actions: []
+            ChartConfiguration:
+              DataLabels:
+                Overlap: DISABLE_OVERLAP
+                Visibility: HIDDEN
+              FieldWells:
+                LineChartAggregatedFieldWells:
+                  Category:
+                  - DateDimensionField:
+                      Column:
+                        ColumnName: event_timestamp
+                        DataSetIdentifier: mpv2_logs_egress
+                      DateGranularity: SECOND
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.3.1737368465047
+                      HierarchyId: 6646cb23-3adf-43a2-95ef-c7ae7e204c51
+                  Colors:
+                  - CategoricalDimensionField:
+                      Column:
+                        ColumnName: channel_arn
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.channel_arn.3.1737564844796
+                  SmallMultiples:
+                  - NumericalDimensionField:
+                      Column:
+                        ColumnName: status_code
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.3.1737564850369
+                  Values:
+                  - NumericalMeasureField:
+                      AggregationFunction:
+                        SimpleNumericalAggregation: COUNT
+                      Column:
+                        ColumnName: status_code
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.2.1736950970467
+              Legend:
+                Height: 39px
+                Position: BOTTOM
+              SortConfiguration:
+                CategoryItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                CategorySort:
+                - FieldSort:
+                    Direction: DESC
+                    FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.3.1737368465047
+                ColorItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                SmallMultiplesLimitConfiguration:
+                  OtherCategories: INCLUDE
+              Tooltip:
+                FieldBasedTooltip:
+                  AggregationVisibility: HIDDEN
+                  TooltipFields:
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.3.1737564850369
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.channel_arn.3.1737564844796
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.3.1737368465047
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.3.1737564850369
+                      Visibility: VISIBLE
+                  TooltipTitleType: PRIMARY_VALUE
+                SelectedTooltipType: DETAILED
+                TooltipVisibility: VISIBLE
+              Type: LINE
+            ColumnHierarchies:
+            - DateTimeHierarchy:
+                DrillDownFilters: []
+                HierarchyId: 6646cb23-3adf-43a2-95ef-c7ae7e204c51
+            Subtitle:
+              Visibility: VISIBLE
+            Title:
+              FormatText:
+                RichText: <visual-title>Status Code by Channel-ARN</visual-title>
+              Visibility: VISIBLE
+            VisualId: e22e3670-076c-4ae1-968c-bc0a9a2fe954
+        - PieChartVisual:
+            Actions: []
+            ChartConfiguration:
+              DataLabels:
+                Overlap: DISABLE_OVERLAP
+                Position: OUTSIDE
+                Visibility: VISIBLE
+              DonutOptions:
+                ArcOptions:
+                  ArcThickness: WHOLE
+              FieldWells:
+                PieChartAggregatedFieldWells:
+                  Category:
+                  - CategoricalDimensionField:
+                      Column:
+                        ColumnName: user_agent
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.user_agent.1.1736408908777
+                  SmallMultiples:
+                  - NumericalDimensionField:
+                      Column:
+                        ColumnName: status_code
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.2.1736842615114
+                  Values:
+                  - NumericalMeasureField:
+                      AggregationFunction:
+                        SimpleNumericalAggregation: COUNT
+                      Column:
+                        ColumnName: status_code
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.1.1736408904324
+                      FormatConfiguration:
+                        FormatConfiguration:
+                          PercentageDisplayFormatConfiguration:
+                            NegativeValueConfiguration:
+                              DisplayMode: NEGATIVE
+                            NullValueFormatConfiguration:
+                              NullString: 'null'
+                            SeparatorConfiguration:
+                              DecimalSeparator: DOT
+                              ThousandsSeparator:
+                                Symbol: COMMA
+                                Visibility: VISIBLE
+                            Suffix: '%'
+              Legend:
+                Position: BOTTOM
+              SortConfiguration:
+                CategoryItemsLimit:
+                  OtherCategories: INCLUDE
+                CategorySort:
+                - FieldSort:
+                    Direction: ASC
+                    FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.1.1736408904324
+                SmallMultiplesLimitConfiguration:
+                  OtherCategories: INCLUDE
+              Tooltip:
+                FieldBasedTooltip:
+                  AggregationVisibility: HIDDEN
+                  TooltipFields:
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.1.1736408904324
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.user_agent.1.1736408908777
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.1.1736408904324
+                      Visibility: VISIBLE
+                  TooltipTitleType: PRIMARY_VALUE
+                SelectedTooltipType: DETAILED
+                TooltipVisibility: VISIBLE
+              ValueLabelOptions:
+                SortIconVisibility: VISIBLE
+            ColumnHierarchies: []
+            Subtitle:
+              Visibility: VISIBLE
+            Title:
+              FormatText:
+                RichText: "<visual-title>Errors by User-Agent\_</visual-title>"
+              Visibility: VISIBLE
+            VisualId: 9e2486f9-c190-4c00-aaf0-7949b595d4be
+        - LineChartVisual:
+            Actions: []
+            ChartConfiguration:
+              DataLabels:
+                Overlap: DISABLE_OVERLAP
+                Visibility: HIDDEN
+              FieldWells:
+                LineChartAggregatedFieldWells:
+                  Category:
+                  - DateDimensionField:
+                      Column:
+                        ColumnName: event_timestamp
+                        DataSetIdentifier: mpv2_logs_egress
+                      DateGranularity: SECOND
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.1.1737368513678
+                      HierarchyId: bd61390e-2925-47ea-b6bd-05fb975fdd0d
+                  Colors: []
+                  Values:
+                  - NumericalMeasureField:
+                      AggregationFunction:
+                        SimpleNumericalAggregation: AVERAGE
+                      Column:
+                        ColumnName: time_to_first_byte
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.time_to_first_byte.1.1736322439799
+                      FormatConfiguration:
+                        FormatConfiguration:
+                          NumberDisplayFormatConfiguration:
+                            NegativeValueConfiguration:
+                              DisplayMode: NEGATIVE
+                            NullValueFormatConfiguration:
+                              NullString: 'null'
+                            SeparatorConfiguration:
+                              DecimalSeparator: DOT
+                              ThousandsSeparator:
+                                Symbol: COMMA
+                                Visibility: VISIBLE
+              SortConfiguration:
+                CategoryItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                CategorySort:
+                - FieldSort:
+                    Direction: DESC
+                    FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.1.1737368513678
+                ColorItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                SmallMultiplesLimitConfiguration:
+                  OtherCategories: INCLUDE
+              Tooltip:
+                FieldBasedTooltip:
+                  AggregationVisibility: HIDDEN
+                  TooltipFields:
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.time_to_first_byte.1.1736322439799
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.1.1737368513678
+                      Visibility: VISIBLE
+                  TooltipTitleType: PRIMARY_VALUE
+                SelectedTooltipType: DETAILED
+                TooltipVisibility: VISIBLE
+              Type: LINE
+            ColumnHierarchies:
+            - DateTimeHierarchy:
+                DrillDownFilters: []
+                HierarchyId: bd61390e-2925-47ea-b6bd-05fb975fdd0d
+            Subtitle:
+              Visibility: VISIBLE
+            Title:
+              FormatText:
+                RichText: <visual-title>Response Time Distribution - avg</visual-title>
+              Visibility: VISIBLE
+            VisualId: 7bf15839-5dfb-482b-ac1c-9ecabeabe005
+        - LineChartVisual:
+            Actions: []
+            ChartConfiguration:
+              DataLabels:
+                Overlap: DISABLE_OVERLAP
+                Visibility: HIDDEN
+              FieldWells:
+                LineChartAggregatedFieldWells:
+                  Category:
+                  - DateDimensionField:
+                      Column:
+                        ColumnName: event_timestamp
+                        DataSetIdentifier: mpv2_logs_egress
+                      DateGranularity: SECOND
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.3.1737118774549
+                      HierarchyId: f5e66bd0-c6f2-43a5-b4f1-8bb4768d59b9
+                  Colors: []
+                  SmallMultiples:
+                  - CategoricalDimensionField:
+                      Column:
+                        ColumnName: channel_id
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.channel_id.3.1737359497541
+                  Values:
+                  - CategoricalMeasureField:
+                      AggregationFunction: COUNT
+                      Column:
+                        ColumnName: request_id
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.request_id.1.1737036871347
+              Legend:
+                Position: BOTTOM
+              SortConfiguration:
+                CategoryItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                CategorySort:
+                - FieldSort:
+                    Direction: DESC
+                    FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.3.1737118774549
+                ColorItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                SmallMultiplesLimitConfiguration:
+                  OtherCategories: INCLUDE
+              Tooltip:
+                FieldBasedTooltip:
+                  AggregationVisibility: HIDDEN
+                  TooltipFields:
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.request_id.1.1737036871347
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.channel_id.3.1737359497541
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.3.1737118774549
+                      Visibility: VISIBLE
+                  TooltipTitleType: PRIMARY_VALUE
+                SelectedTooltipType: DETAILED
+                TooltipVisibility: VISIBLE
+              Type: LINE
+            ColumnHierarchies:
+            - DateTimeHierarchy:
+                DrillDownFilters: []
+                HierarchyId: f5e66bd0-c6f2-43a5-b4f1-8bb4768d59b9
+            Subtitle:
+              Visibility: VISIBLE
+            Title:
+              FormatText:
+                RichText: <visual-title>Total Request per  channel-id</visual-title>
+              Visibility: VISIBLE
+            VisualId: 2123f00b-3e7d-4322-9154-e09c97dc7d6e
+        - LineChartVisual:
+            Actions: []
+            ChartConfiguration:
+              DataLabels:
+                Overlap: DISABLE_OVERLAP
+                Visibility: HIDDEN
+              FieldWells:
+                LineChartAggregatedFieldWells:
+                  Category:
+                  - DateDimensionField:
+                      Column:
+                        ColumnName: event_timestamp
+                        DataSetIdentifier: mpv2_logs_egress
+                      DateGranularity: SECOND
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.1.1737368507562
+                      HierarchyId: 91f06263-7fc8-4e83-8fb6-d6f2c878371e
+                  Colors: []
+                  Values:
+                  - NumericalMeasureField:
+                      AggregationFunction:
+                        SimpleNumericalAggregation: MIN
+                      Column:
+                        ColumnName: time_to_first_byte
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.time_to_first_byte.1.1736322439799
+                      FormatConfiguration:
+                        FormatConfiguration:
+                          NumberDisplayFormatConfiguration:
+                            NegativeValueConfiguration:
+                              DisplayMode: NEGATIVE
+                            NullValueFormatConfiguration:
+                              NullString: 'null'
+                            SeparatorConfiguration:
+                              DecimalSeparator: DOT
+                              ThousandsSeparator:
+                                Symbol: COMMA
+                                Visibility: VISIBLE
+              SortConfiguration:
+                CategoryItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                CategorySort:
+                - FieldSort:
+                    Direction: DESC
+                    FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.1.1737368507562
+                ColorItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                SmallMultiplesLimitConfiguration:
+                  OtherCategories: INCLUDE
+              Tooltip:
+                FieldBasedTooltip:
+                  AggregationVisibility: HIDDEN
+                  TooltipFields:
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.1.1737368507562
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.time_to_first_byte.1.1736322439799
+                      Visibility: VISIBLE
+                  TooltipTitleType: PRIMARY_VALUE
+                SelectedTooltipType: DETAILED
+                TooltipVisibility: VISIBLE
+              Type: LINE
+            ColumnHierarchies:
+            - DateTimeHierarchy:
+                DrillDownFilters: []
+                HierarchyId: 91f06263-7fc8-4e83-8fb6-d6f2c878371e
+            Subtitle:
+              Visibility: VISIBLE
+            Title:
+              FormatText:
+                RichText: <visual-title>Response Time Distribution - min</visual-title>
+              Visibility: VISIBLE
+            VisualId: b7482ef8-10ab-49f5-b425-cd4650909b04
+        - LineChartVisual:
+            Actions: []
+            ChartConfiguration:
+              DataLabels:
+                Overlap: DISABLE_OVERLAP
+                Visibility: HIDDEN
+              FieldWells:
+                LineChartAggregatedFieldWells:
+                  Category:
+                  - DateDimensionField:
+                      Column:
+                        ColumnName: event_timestamp
+                        DataSetIdentifier: mpv2_logs_egress
+                      DateGranularity: SECOND
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.1.1737368526850
+                      HierarchyId: 8046a995-58ec-48b1-8f5d-d6d36bcbdfde
+                  Colors: []
+                  Values:
+                  - NumericalMeasureField:
+                      AggregationFunction:
+                        SimpleNumericalAggregation: MAX
+                      Column:
+                        ColumnName: time_to_first_byte
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.time_to_first_byte.1.1736406448516
+              SortConfiguration:
+                CategoryItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                CategorySort:
+                - FieldSort:
+                    Direction: DESC
+                    FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.1.1737368526850
+                ColorItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                SmallMultiplesLimitConfiguration:
+                  OtherCategories: INCLUDE
+              Tooltip:
+                FieldBasedTooltip:
+                  AggregationVisibility: HIDDEN
+                  TooltipFields:
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.time_to_first_byte.1.1736406448516
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.1.1737368526850
+                      Visibility: VISIBLE
+                  TooltipTitleType: PRIMARY_VALUE
+                SelectedTooltipType: DETAILED
+                TooltipVisibility: VISIBLE
+              Type: LINE
+            ColumnHierarchies:
+            - DateTimeHierarchy:
+                DrillDownFilters: []
+                HierarchyId: 8046a995-58ec-48b1-8f5d-d6d36bcbdfde
+            Subtitle:
+              Visibility: VISIBLE
+            Title:
+              FormatText:
+                RichText: <visual-title>Response Time Distribution - Max</visual-title>
+              Visibility: VISIBLE
+            VisualId: 5fc86b13-931f-442a-a740-fbbaf92276cd
+        - LineChartVisual:
+            Actions: []
+            ChartConfiguration:
+              DataLabels:
+                Overlap: DISABLE_OVERLAP
+                Visibility: HIDDEN
+              FieldWells:
+                LineChartAggregatedFieldWells:
+                  Category:
+                  - DateDimensionField:
+                      Column:
+                        ColumnName: event_timestamp
+                        DataSetIdentifier: mpv2_logs_egress
+                      DateGranularity: SECOND
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.1.1737368534111
+                      HierarchyId: 06728789-d4c9-4a7d-afc1-072c487fe1f0
+                  Colors: []
+                  Values:
+                  - NumericalMeasureField:
+                      AggregationFunction:
+                        SimpleNumericalAggregation: AVERAGE
+                      Column:
+                        ColumnName: sent_bytes
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.sent_bytes.1.1736406535239
+              SortConfiguration:
+                CategoryItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                CategorySort:
+                - FieldSort:
+                    Direction: DESC
+                    FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.1.1737368534111
+                ColorItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                SmallMultiplesLimitConfiguration:
+                  OtherCategories: INCLUDE
+              Tooltip:
+                FieldBasedTooltip:
+                  AggregationVisibility: HIDDEN
+                  TooltipFields:
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.sent_bytes.1.1736406535239
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.1.1737368534111
+                      Visibility: VISIBLE
+                  TooltipTitleType: PRIMARY_VALUE
+                SelectedTooltipType: DETAILED
+                TooltipVisibility: VISIBLE
+              Type: LINE
+            ColumnHierarchies:
+            - DateTimeHierarchy:
+                DrillDownFilters: []
+                HierarchyId: 06728789-d4c9-4a7d-afc1-072c487fe1f0
+            Subtitle:
+              Visibility: VISIBLE
+            Title:
+              FormatText:
+                RichText: <visual-title>Average Sent_Bytes</visual-title>
+              Visibility: VISIBLE
+            VisualId: e1183a3f-ef51-4ea9-98ff-6933424fcfa6
+        - LineChartVisual:
+            Actions: []
+            ChartConfiguration:
+              DataLabels:
+                Overlap: DISABLE_OVERLAP
+                Visibility: HIDDEN
+              FieldWells:
+                LineChartAggregatedFieldWells:
+                  Category:
+                  - DateDimensionField:
+                      Column:
+                        ColumnName: event_timestamp
+                        DataSetIdentifier: mpv2_logs_egress
+                      DateGranularity: SECOND
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.2.1737368542164
+                      HierarchyId: 46412a2d-f5cd-4ddb-a595-7cf850c7bf91
+                  Colors:
+                  - CategoricalDimensionField:
+                      Column:
+                        ColumnName: channel_id
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.channel_id.2.1736406656385
+                  Values:
+                  - CategoricalMeasureField:
+                      AggregationFunction: COUNT
+                      Column:
+                        ColumnName: request_id
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.request_id.1.1736406652602
+              Legend:
+                Position: BOTTOM
+              SortConfiguration:
+                CategoryItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                CategorySort:
+                - FieldSort:
+                    Direction: DESC
+                    FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.2.1737368542164
+                ColorItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                SmallMultiplesLimitConfiguration:
+                  OtherCategories: INCLUDE
+              Tooltip:
+                FieldBasedTooltip:
+                  AggregationVisibility: HIDDEN
+                  TooltipFields:
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.request_id.1.1736406652602
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.channel_id.2.1736406656385
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.2.1737368542164
+                      Visibility: VISIBLE
+                  TooltipTitleType: PRIMARY_VALUE
+                SelectedTooltipType: DETAILED
+                TooltipVisibility: VISIBLE
+              Type: STACKED_AREA
+            ColumnHierarchies:
+            - DateTimeHierarchy:
+                DrillDownFilters: []
+                HierarchyId: 46412a2d-f5cd-4ddb-a595-7cf850c7bf91
+            Subtitle:
+              Visibility: VISIBLE
+            Title:
+              FormatText:
+                RichText: <visual-title>Total Requests distribution by Channel</visual-title>
+              Visibility: VISIBLE
+            VisualId: e7f63c0f-bde1-4924-b942-008ab994fbca
+        - LineChartVisual:
+            Actions: []
+            ChartConfiguration:
+              DataLabels:
+                Overlap: DISABLE_OVERLAP
+                Visibility: HIDDEN
+              FieldWells:
+                LineChartAggregatedFieldWells:
+                  Category:
+                  - DateDimensionField:
+                      Column:
+                        ColumnName: event_timestamp
+                        DataSetIdentifier: mpv2_logs_egress
+                      DateGranularity: SECOND
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.2.1737368549425
+                      HierarchyId: ea93df9a-8f46-4c9b-876d-8f774e88b3eb
+                  Colors:
+                  - CategoricalDimensionField:
+                      Column:
+                        ColumnName: channel_id
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.channel_id.2.1736408327407
+                  Values:
+                  - NumericalMeasureField:
+                      AggregationFunction:
+                        SimpleNumericalAggregation: SUM
+                      Column:
+                        ColumnName: sent_bytes
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.sent_bytes.1.1736408301696
+              Legend:
+                Position: BOTTOM
+                Width: 100px
+              SortConfiguration:
+                CategoryItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                CategorySort:
+                - FieldSort:
+                    Direction: DESC
+                    FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.2.1737368549425
+                ColorItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                SmallMultiplesLimitConfiguration:
+                  OtherCategories: INCLUDE
+              Tooltip:
+                FieldBasedTooltip:
+                  AggregationVisibility: HIDDEN
+                  TooltipFields:
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.sent_bytes.1.1736408301696
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.channel_id.2.1736408327407
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.2.1737368549425
+                      Visibility: VISIBLE
+                  TooltipTitleType: PRIMARY_VALUE
+                SelectedTooltipType: DETAILED
+                TooltipVisibility: VISIBLE
+              Type: STACKED_AREA
+            ColumnHierarchies:
+            - DateTimeHierarchy:
+                DrillDownFilters: []
+                HierarchyId: ea93df9a-8f46-4c9b-876d-8f774e88b3eb
+            Subtitle:
+              Visibility: VISIBLE
+            Title:
+              FormatText:
+                RichText: <visual-title>Total Sent_Bytes distribution by Channel (Bytes)</visual-title>
+              Visibility: VISIBLE
+            VisualId: 6043fd0f-a2f2-484c-8ba3-bd59de15898d
+        - PieChartVisual:
+            Actions: []
+            ChartConfiguration:
+              DataLabels:
+                Overlap: DISABLE_OVERLAP
+                Visibility: VISIBLE
+              DonutOptions:
+                ArcOptions:
+                  ArcThickness: WHOLE
+              FieldWells:
+                PieChartAggregatedFieldWells:
+                  Category:
+                  - CategoricalDimensionField:
+                      Column:
+                        ColumnName: client_ip
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.client_ip.0.1736408617195
+                  SmallMultiples:
+                  - NumericalDimensionField:
+                      Column:
+                        ColumnName: status_code
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.2.1736842536006
+                  Values:
+                  - NumericalMeasureField:
+                      AggregationFunction:
+                        SimpleNumericalAggregation: COUNT
+                      Column:
+                        ColumnName: status_code
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.1.1736408651864
+                      FormatConfiguration:
+                        FormatConfiguration:
+                          NumberDisplayFormatConfiguration:
+                            NegativeValueConfiguration:
+                              DisplayMode: NEGATIVE
+                            NullValueFormatConfiguration:
+                              NullString: 'null'
+                            SeparatorConfiguration:
+                              DecimalSeparator: DOT
+                              ThousandsSeparator:
+                                Symbol: COMMA
+                                Visibility: VISIBLE
+              Legend:
+                Position: BOTTOM
+              SortConfiguration:
+                CategoryItemsLimit:
+                  OtherCategories: INCLUDE
+                CategorySort:
+                - FieldSort:
+                    Direction: DESC
+                    FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.1.1736408651864
+                SmallMultiplesLimitConfiguration:
+                  OtherCategories: INCLUDE
+              Tooltip:
+                FieldBasedTooltip:
+                  AggregationVisibility: HIDDEN
+                  TooltipFields:
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.client_ip.0.1736408617195
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.1.1736408651864
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.1.1736408651864
+                      Visibility: VISIBLE
+                  TooltipTitleType: PRIMARY_VALUE
+                SelectedTooltipType: DETAILED
+                TooltipVisibility: VISIBLE
+            ColumnHierarchies: []
+            Subtitle:
+              Visibility: VISIBLE
+            Title:
+              FormatText:
+                RichText: <visual-title>Status Code by Client-IP (in case CDN is used, the
+                  client IP will be the PoP's IP)</visual-title>
+              Visibility: VISIBLE
+            VisualId: fcbfe888-f5f7-4fc9-9e52-035215474334
+        - LineChartVisual:
+            Actions: []
+            ChartConfiguration:
+              DataLabels:
+                Overlap: DISABLE_OVERLAP
+                Visibility: HIDDEN
+              FieldWells:
+                LineChartAggregatedFieldWells:
+                  Category:
+                  - DateDimensionField:
+                      Column:
+                        ColumnName: event_timestamp
+                        DataSetIdentifier: mpv2_logs_egress
+                      DateGranularity: SECOND
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.3.1737368435168
+                      HierarchyId: 4f1ff887-fcda-4fe7-ab02-3f317549fed6
+                  Colors:
+                  - CategoricalDimensionField:
+                      Column:
+                        ColumnName: channel_id
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.channel_id.3.1737564882671
+                  SmallMultiples:
+                  - NumericalDimensionField:
+                      Column:
+                        ColumnName: status_code
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.3.1737564888070
+                  Values:
+                  - NumericalMeasureField:
+                      AggregationFunction:
+                        SimpleNumericalAggregation: COUNT
+                      Column:
+                        ColumnName: status_code
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.2.1736946178933
+              Legend:
+                Height: 39px
+                Position: BOTTOM
+              SortConfiguration:
+                CategoryItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                CategorySort:
+                - FieldSort:
+                    Direction: DESC
+                    FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.3.1737368435168
+                ColorItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                SmallMultiplesLimitConfiguration:
+                  OtherCategories: INCLUDE
+              Tooltip:
+                FieldBasedTooltip:
+                  AggregationVisibility: HIDDEN
+                  TooltipFields:
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.3.1737564888070
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.channel_id.3.1737564882671
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.3.1737368435168
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.3.1737564888070
+                      Visibility: VISIBLE
+                  TooltipTitleType: PRIMARY_VALUE
+                SelectedTooltipType: DETAILED
+                TooltipVisibility: VISIBLE
+              Type: LINE
+            ColumnHierarchies:
+            - DateTimeHierarchy:
+                DrillDownFilters: []
+                HierarchyId: 4f1ff887-fcda-4fe7-ab02-3f317549fed6
+            Subtitle:
+              Visibility: VISIBLE
+            Title:
+              FormatText:
+                RichText: <visual-title>Status Code by Channel-id</visual-title>
+              Visibility: VISIBLE
+            VisualId: cb9b7567-82f5-4958-acc1-cf658d583ed5
+        - PivotTableVisual:
+            Actions: []
+            ChartConfiguration:
+              FieldOptions:
+                DataPathOptions:
+                - DataPathList:
+                  - DataPathType:
+                      PivotTableDataPathType: HIERARCHY_ROWS_LAYOUT_COLUMN
+                  Width: 1394px
+                SelectedFieldOptions:
+                - FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.request_uri_base.2.1736410125173
+                  Visibility: VISIBLE
+                - FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.request_id.3.1736410129989
+                  Visibility: VISIBLE
+                - FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.2.1737360549599
+                  Visibility: VISIBLE
+              FieldWells:
+                PivotTableAggregatedFieldWells:
+                  Columns:
+                  - NumericalDimensionField:
+                      Column:
+                        ColumnName: status_code
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.2.1737360549599
+                  Rows:
+                  - CategoricalDimensionField:
+                      Column:
+                        ColumnName: request_uri_base
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.request_uri_base.2.1736410125173
+                  - CategoricalDimensionField:
+                      Column:
+                        ColumnName: request_id
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.request_id.3.1736410129989
+                  Values: []
+              SortConfiguration:
+                FieldSortOptions: []
+              TableOptions:
+                CellStyle:
+                  Height: 25
+                CollapsedRowDimensionsVisibility: HIDDEN
+                ColumnHeaderStyle: {}
+                RowAlternateColorOptions:
+                  Status: DISABLED
+                  UsePrimaryBackgroundColor: ENABLED
+                RowFieldNamesStyle: {}
+                RowsLayout: HIERARCHY
+              TotalOptions:
+                ColumnTotalOptions:
+                  Placement: END
+                  TotalsVisibility: VISIBLE
+                RowSubtotalOptions:
+                  CustomLabel: <<$aws:subtotalDimension>> Subtotal
+                  MetricHeaderCellStyle: {}
+                  StyleTargets:
+                  - CellType: VALUE
+                  - CellType: TOTAL
+                  - CellType: METRIC_HEADER
+                  TotalCellStyle: {}
+                  TotalsVisibility: HIDDEN
+                  ValueCellStyle: {}
+                RowTotalOptions:
+                  Placement: AUTO
+            Subtitle:
+              Visibility: VISIBLE
+            Title:
+              FormatText:
+                RichText: <visual-title>Error distribution per Request-URI and Request-ID</visual-title>
+              Visibility: VISIBLE
+            VisualId: 31eb47e7-fc8d-488b-a372-13f2cab101f0
+        - LineChartVisual:
+            Actions: []
+            ChartConfiguration:
+              DataLabels:
+                Overlap: DISABLE_OVERLAP
+                Visibility: HIDDEN
+              FieldWells:
+                LineChartAggregatedFieldWells:
+                  Category:
+                  - DateDimensionField:
+                      Column:
+                        ColumnName: event_timestamp
+                        DataSetIdentifier: mpv2_logs_egress
+                      DateGranularity: SECOND
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.2.1737368423652
+                      HierarchyId: a8b62abf-8cac-4548-8041-f1da983e0f27
+                  Colors: []
+                  SmallMultiples:
+                  - NumericalDimensionField:
+                      Column:
+                        ColumnName: status_code
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.2.1737564910159
+                  Values:
+                  - NumericalMeasureField:
+                      AggregationFunction:
+                        SimpleNumericalAggregation: COUNT
+                      Column:
+                        ColumnName: status_code
+                        DataSetIdentifier: mpv2_logs_egress
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.1.1736854826613
+              SortConfiguration:
+                CategoryItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                CategorySort:
+                - FieldSort:
+                    Direction: DESC
+                    FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.2.1737368423652
+                ColorItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                SmallMultiplesLimitConfiguration:
+                  OtherCategories: INCLUDE
+              Tooltip:
+                FieldBasedTooltip:
+                  AggregationVisibility: HIDDEN
+                  TooltipFields:
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.2.1737564910159
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.event_timestamp.2.1737368423652
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 638edce4-ad6d-403b-ade5-36ed3d04490c.status_code.2.1737564910159
+                      Visibility: VISIBLE
+                  TooltipTitleType: PRIMARY_VALUE
+                SelectedTooltipType: DETAILED
+                TooltipVisibility: VISIBLE
+              Type: LINE
+            ColumnHierarchies:
+            - DateTimeHierarchy:
+                DrillDownFilters: []
+                HierarchyId: a8b62abf-8cac-4548-8041-f1da983e0f27
+            Subtitle:
+              Visibility: VISIBLE
+            Title:
+              FormatText:
+                RichText: "<visual-title>Status Code Over Time\_</visual-title>"
+              Visibility: VISIBLE
+            VisualId: 02e1b076-e8ef-4a18-9ca9-7a1f45c0cada
+datasets:
+  mpv2_logs_egress:
+    data:
+      DataSetId: 8f03dcef-405c-4809-8801-20e702fe3447
+      Name: mpv2_logs_egress
+      PhysicalTableMap:
+        01e980d4-8b69-49e3-81c7-419828efa26c:
+          RelationalTable:
+            DataSourceArn: ${athena_datasource_arn}
+            Catalog: AwsDataCatalog
+            Schema: ${athena_database_name}
+            Name: mpv2_logs_egress
+            InputColumns:
+            - Name: resource_arn
+              Type: STRING
+            - Name: event_timestamp
+              Type: DATETIME
+            - Name: client_ip
+              Type: STRING
+            - Name: time_to_first_byte
+              Type: DECIMAL
+            - Name: status_code
+              Type: INTEGER
+            - Name: received_bytes
+              Type: INTEGER
+            - Name: sent_bytes
+              Type: INTEGER
+            - Name: method
+              Type: STRING
+            - Name: request_uri_base
+              Type: STRING
+            - Name: request_query_params
+              Type: STRING
+            - Name: protocol
+              Type: STRING
+            - Name: user_agent
+              Type: STRING
+            - Name: domain_name
+              Type: STRING
+            - Name: request_id
+              Type: STRING
+            - Name: account
+              Type: STRING
+            - Name: channel_id
+              Type: STRING
+            - Name: channel_arn
+              Type: STRING
+            - Name: endpoint_id
+              Type: STRING
+            - Name: endpoint_arn
+              Type: STRING
+            - Name: channel_group_id
+              Type: STRING
+            - Name: manifest_name
+              Type: STRING
+            - Name: manifest_type
+              Type: STRING
+      LogicalTableMap:
+        638edce4-ad6d-403b-ade5-36ed3d04490c:
+          Alias: mpv2_logs_egress
+          Source:
+            PhysicalTableId: 01e980d4-8b69-49e3-81c7-419828efa26c
+      ImportMode: DIRECT_QUERY
+    dependsOn:
+      views:
+      - mpv2_logs_egress
+    schedules:
+    - default
+crawlers: {}
+views:
+  mpv2_logs_egress:
+    data: |-
+      CREATE TABLE "${athena_database_name}".mpv2_logs_egress (
+        resource_arn string,
+        event_timestamp timestamp,
+        client_ip string,
+        time_to_first_byte double,
+        status_code int,
+        received_bytes bigint,
+        sent_bytes bigint,
+        method string,
+        request_uri_base string,
+        request_query_params string,
+        protocol string,
+        user_agent string,
+        domain_name string,
+        request_id string,
+        account string,
+        channel_id string,
+        channel_arn string,
+        endpoint_id string,
+        endpoint_arn string,
+        channel_group_id string,
+        manifest_name string,
+        manifest_type string)
+      PARTITIONED BY (day(`event_timestamp`))
+      LOCATION '${s3path}'
+      TBLPROPERTIES (
+        'table_type'='iceberg',
+        'write_compression'='zstd',
+        'optimize_rewrite_delete_file_threshold'='10'
+      );
+    parameters:
+      s3path:
+        default: s3://mpv2-log-test/mpv2-logs/mediapackage-v2/egress
+        description: S3 Path for mpv2_logs_egress table

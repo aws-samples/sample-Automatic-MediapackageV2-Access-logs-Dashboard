@@ -1,0 +1,1295 @@
+dashboards:
+  mpv2_logs_ingress ANALYSIS:
+    dependsOn:
+      datasets:
+      - mpv2_logs_ingress
+    name: mpv2_logs_ingress analysis
+    dashboardId: mediapackage-v2-logs-ingress-analysis
+    category: Custom
+    theme: MIDNIGHT
+    data: |-
+      AnalysisDefaults:
+        DefaultNewSheetConfiguration:
+          InteractiveLayoutConfiguration:
+            Grid:
+              CanvasSizeOptions:
+                ScreenCanvasSizeOptions:
+                  OptimizedViewPortWidth: 1600px
+                  ResizeOption: FIXED
+          SheetContentType: INTERACTIVE
+      CalculatedFields:
+      - DataSetIdentifier: mpv2_logs_ingress
+        Expression: |-
+          ifelse(
+              ${Granularity} = 'Day', truncDate('DD', {event_timestamp}),
+              ${Granularity} = 'Hour', truncDate('HH', {event_timestamp}),
+              ${Granularity} = 'Minute', truncDate('MI', {event_timestamp}),
+              ${Granularity} = 'Second', truncDate('SS', {event_timestamp}),
+              truncDate('DD', {event_timestamp})
+              )
+        Name: Granularity-calculated-field
+      - DataSetIdentifier: mpv2_logs_ingress
+        Expression: '{status_code}>=400'
+        Name: ingest errors
+      DataSetIdentifierDeclarations:
+      - DataSetArn: arn:aws:quicksight:::dataset/bdc7b98e-a9a0-4e6a-acd8-cafbf5f9b58d
+        Identifier: mpv2_logs_ingress
+      FilterGroups:
+      - CrossDataset: SINGLE_DATASET
+        FilterGroupId: 7859c758-1f46-4231-848a-9d47f6734557
+        Filters:
+        - TimeRangeFilter:
+            Column:
+              ColumnName: event_timestamp
+              DataSetIdentifier: mpv2_logs_ingress
+            FilterId: 60b204b0-17bb-4fa5-82d4-47060c057e07
+            IncludeMaximum: true
+            IncludeMinimum: true
+            NullOption: NON_NULLS_ONLY
+            RangeMaximumValue:
+              Parameter: EndDate
+            RangeMinimumValue:
+              Parameter: StartDate
+            TimeGranularity: DAY
+        ScopeConfiguration:
+          SelectedSheets:
+            SheetVisualScopingConfigurations:
+            - Scope: ALL_VISUALS
+              SheetId: b9fbfc7e-a088-49df-be7a-cec200824ee7
+        Status: ENABLED
+      - CrossDataset: SINGLE_DATASET
+        FilterGroupId: b07f662c-e696-4899-b73f-aaf68db5953b
+        Filters:
+        - CategoryFilter:
+            Column:
+              ColumnName: channel_id
+              DataSetIdentifier: mpv2_logs_ingress
+            Configuration:
+              FilterListConfiguration:
+                MatchOperator: CONTAINS
+                NullOption: NON_NULLS_ONLY
+                SelectAllOptions: FILTER_ALL_VALUES
+            FilterId: 68beeb31-3525-4d76-b451-a6ca47ed8f82
+        ScopeConfiguration:
+          SelectedSheets:
+            SheetVisualScopingConfigurations:
+            - Scope: ALL_VISUALS
+              SheetId: b9fbfc7e-a088-49df-be7a-cec200824ee7
+        Status: ENABLED
+      - CrossDataset: SINGLE_DATASET
+        FilterGroupId: ae36b3d7-647d-4e0c-b6b5-7afd97c7a012
+        Filters:
+        - CategoryFilter:
+            Column:
+              ColumnName: channel_id
+              DataSetIdentifier: mpv2_logs_ingress
+            Configuration:
+              FilterListConfiguration:
+                MatchOperator: CONTAINS
+                NullOption: NON_NULLS_ONLY
+                SelectAllOptions: FILTER_ALL_VALUES
+            FilterId: 97f4deb5-6d60-4ffa-b3e6-027b56f67f4b
+        ScopeConfiguration:
+          SelectedSheets:
+            SheetVisualScopingConfigurations:
+            - Scope: SELECTED_VISUALS
+              SheetId: b9fbfc7e-a088-49df-be7a-cec200824ee7
+              VisualIds:
+              - 4cddfcd9-2ba3-4d3e-9bc4-14dfb1bab17a
+        Status: ENABLED
+      Options:
+        WeekStart: SUNDAY
+      ParameterDeclarations:
+      - StringParameterDeclaration:
+          DefaultValues:
+            StaticValues: []
+          Name: ChannelID
+          ParameterValueType: SINGLE_VALUED
+          ValueWhenUnset:
+            ValueWhenUnsetOption: RECOMMENDED_VALUE
+      - StringParameterDeclaration:
+          DefaultValues:
+            StaticValues: []
+          Name: Granularity
+          ParameterValueType: SINGLE_VALUED
+          ValueWhenUnset:
+            ValueWhenUnsetOption: RECOMMENDED_VALUE
+      - DateTimeParameterDeclaration:
+          DefaultValues:
+            RollingDate:
+              Expression: addDateTime(-1, 'DD', truncDate('DD', now()))
+            StaticValues: []
+          Name: StartDate
+          TimeGranularity: SECOND
+      - DateTimeParameterDeclaration:
+          DefaultValues:
+            RollingDate:
+              Expression: truncDate('DD', now())
+            StaticValues: []
+          Name: EndDate
+          TimeGranularity: SECOND
+      Sheets:
+      - ContentType: INTERACTIVE
+        FilterControls:
+        - Dropdown:
+            DisplayOptions:
+              SelectAllOptions:
+                Visibility: VISIBLE
+            FilterControlId: f1de1349-59c1-44cb-8b1e-6cd87edda45e
+            SourceFilterId: 68beeb31-3525-4d76-b451-a6ca47ed8f82
+            Title: channel_id equals
+            Type: MULTI_SELECT
+        Layouts:
+        - Configuration:
+            GridLayout:
+              CanvasSizeOptions:
+                ScreenCanvasSizeOptions:
+                  OptimizedViewPortWidth: 1600px
+                  ResizeOption: FIXED
+              Elements:
+              - ColumnIndex: 0
+                ColumnSpan: 32
+                ElementId: 1aae73aa-53c1-405a-b163-90f0cad43f53
+                ElementType: VISUAL
+                RowIndex: 0
+                RowSpan: 9
+              - ColumnIndex: 0
+                ColumnSpan: 32
+                ElementId: a2b67520-b7be-4b8a-9475-5d583e0022d4
+                ElementType: TEXT_BOX
+                RowIndex: 9
+                RowSpan: 1
+              - ColumnIndex: 0
+                ColumnSpan: 32
+                ElementId: b196989f-6efd-457c-bdfc-32e0ccc4f8e5
+                ElementType: VISUAL
+                RowIndex: 10
+                RowSpan: 7
+              - ColumnIndex: 0
+                ColumnSpan: 32
+                ElementId: a7bafa96-fa05-402e-8846-186187da8944
+                ElementType: VISUAL
+                RowIndex: 17
+                RowSpan: 6
+              - ColumnIndex: 0
+                ColumnSpan: 32
+                ElementId: b84d6e52-8faa-4048-b659-c2f372534031
+                ElementType: VISUAL
+                RowIndex: 23
+                RowSpan: 6
+              - ColumnIndex: 0
+                ColumnSpan: 32
+                ElementId: 58fa3333-d877-4dea-9bec-8a588dd01c93
+                ElementType: TEXT_BOX
+                RowIndex: 29
+                RowSpan: 1
+              - ColumnIndex: 0
+                ColumnSpan: 17
+                ElementId: 9fd8835b-3da2-421c-b57b-a1f79e7675b9
+                ElementType: VISUAL
+                RowIndex: 30
+                RowSpan: 7
+              - ColumnIndex: 17
+                ColumnSpan: 15
+                ElementId: c67aa542-9c60-4024-9e20-644a94e48cac
+                ElementType: VISUAL
+                RowIndex: 30
+                RowSpan: 7
+              - ColumnIndex: 0
+                ColumnSpan: 32
+                ElementId: 43946191-9b84-4944-b3c9-75f9cd91e7d1
+                ElementType: TEXT_BOX
+                RowIndex: 37
+                RowSpan: 1
+              - ColumnIndex: 0
+                ColumnSpan: 32
+                ElementId: 4cddfcd9-2ba3-4d3e-9bc4-14dfb1bab17a
+                ElementType: VISUAL
+                RowIndex: 38
+                RowSpan: 6
+              - ColumnIndex: 0
+                ColumnSpan: 32
+                ElementId: 70b52d75-40db-4722-95a4-873bf11d7bd7
+                ElementType: VISUAL
+                RowIndex: 44
+                RowSpan: 6
+              - ColumnIndex: 0
+                ColumnSpan: 17
+                ElementId: 927f5dda-5925-4466-ad68-50f4f28552d8
+                ElementType: VISUAL
+                RowIndex: 50
+                RowSpan: 5
+              - ColumnIndex: 17
+                ColumnSpan: 15
+                ElementId: ded355b6-fcd1-4eec-90b1-9a0bd9a808d2
+                ElementType: VISUAL
+                RowIndex: 50
+                RowSpan: 5
+              - ColumnIndex: 0
+                ColumnSpan: 32
+                ElementId: 50c55d62-f87f-420a-b1cf-814dd6781b84
+                ElementType: TEXT_BOX
+                RowIndex: 55
+                RowSpan: 1
+              - ColumnIndex: 0
+                ColumnSpan: 32
+                ElementId: 763a8276-e722-4e8f-abc8-b022e894fc89
+                ElementType: VISUAL
+                RowIndex: 56
+                RowSpan: 6
+              - ColumnIndex: 0
+                ColumnSpan: 32
+                ElementId: 342e59a0-e1b3-4be5-81f8-13b12c0b793b
+                ElementType: VISUAL
+                RowIndex: 62
+                RowSpan: 6
+        Name: Ingress Logs Analysis
+        ParameterControls:
+        - DateTimePicker:
+            DisplayOptions:
+              DateIconVisibility: VISIBLE
+              DateTimeFormat: YYYY/MM/DD HH:mm:ss
+              HelperTextVisibility: VISIBLE
+              TitleOptions:
+                FontConfiguration:
+                  FontSize:
+                    Relative: MEDIUM
+                Visibility: VISIBLE
+            ParameterControlId: c0fa7bad-4301-44a2-a152-102d5d7de614
+            SourceParameterName: StartDate
+            Title: StartDate
+        - DateTimePicker:
+            DisplayOptions:
+              DateIconVisibility: VISIBLE
+              DateTimeFormat: YYYY/MM/DD HH:mm:ss
+              HelperTextVisibility: VISIBLE
+              TitleOptions:
+                FontConfiguration:
+                  FontSize:
+                    Relative: MEDIUM
+                Visibility: VISIBLE
+            ParameterControlId: 48812590-3b1c-4c86-ba4c-708424435726
+            SourceParameterName: EndDate
+            Title: EndDate
+        SheetControlLayouts:
+        - Configuration:
+            GridLayout:
+              Elements:
+              - ColumnSpan: 2
+                ElementId: c0fa7bad-4301-44a2-a152-102d5d7de614
+                ElementType: PARAMETER_CONTROL
+                RowSpan: 1
+              - ColumnSpan: 2
+                ElementId: 48812590-3b1c-4c86-ba4c-708424435726
+                ElementType: PARAMETER_CONTROL
+                RowSpan: 1
+              - ColumnSpan: 2
+                ElementId: f1de1349-59c1-44cb-8b1e-6cd87edda45e
+                ElementType: FILTER_CONTROL
+                RowSpan: 1
+        SheetId: b9fbfc7e-a088-49df-be7a-cec200824ee7
+        TextBoxes:
+        - Content: "<text-box>\n  <inline color=\"#00fff6\">\n    <b>Ingest Health\_</b>\n\
+            \  </inline>\n</text-box>"
+          SheetTextBoxId: a2b67520-b7be-4b8a-9475-5d583e0022d4
+        - Content: "<text-box>\n  <inline color=\"#00fff6\">\n    <b>Ingest Volume\_</b>\n\
+            \  </inline>\n</text-box>"
+          SheetTextBoxId: 58fa3333-d877-4dea-9bec-8a588dd01c93
+        - Content: |-
+            <text-box>
+              <inline color="#00fff6">
+                <b>Source Analysis</b>
+              </inline>
+              <inline color="#00d2ff">
+                <b/>
+              </inline>
+            </text-box>
+          SheetTextBoxId: 43946191-9b84-4944-b3c9-75f9cd91e7d1
+        - Content: |-
+            <text-box>
+              <inline color="#00fff6">
+                <b>Ingest Performance</b>
+              </inline>
+            </text-box>
+          SheetTextBoxId: 50c55d62-f87f-420a-b1cf-814dd6781b84
+        Visuals:
+        - LineChartVisual:
+            Actions: []
+            ChartConfiguration:
+              DataLabels:
+                Overlap: DISABLE_OVERLAP
+                Visibility: HIDDEN
+              FieldWells:
+                LineChartAggregatedFieldWells:
+                  Category:
+                  - DateDimensionField:
+                      Column:
+                        ColumnName: event_timestamp
+                        DataSetIdentifier: mpv2_logs_ingress
+                      DateGranularity: SECOND
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.event_timestamp.3.1737119992563
+                      HierarchyId: 018b602c-658b-4e94-9757-794e44d28cf8
+                  Colors:
+                  - CategoricalDimensionField:
+                      Column:
+                        ColumnName: channel_id
+                        DataSetIdentifier: mpv2_logs_ingress
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.channel_id.2.1736841716454
+                  Values:
+                  - NumericalMeasureField:
+                      Column:
+                        ColumnName: Ingest-Success-Rate
+                        DataSetIdentifier: mpv2_logs_ingress
+                      FieldId: 4484e125-6261-4705-849a-17b1ce947099.3.1737629114702
+                      FormatConfiguration:
+                        FormatConfiguration:
+                          PercentageDisplayFormatConfiguration:
+                            NegativeValueConfiguration:
+                              DisplayMode: NEGATIVE
+                            NullValueFormatConfiguration:
+                              NullString: 'null'
+                            SeparatorConfiguration:
+                              DecimalSeparator: DOT
+                              ThousandsSeparator:
+                                Symbol: COMMA
+                                Visibility: VISIBLE
+                            Suffix: '%'
+              Legend:
+                Position: BOTTOM
+                Title:
+                  Visibility: VISIBLE
+                Visibility: VISIBLE
+              SortConfiguration:
+                CategorySort:
+                - FieldSort:
+                    Direction: DESC
+                    FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.event_timestamp.3.1737119992563
+              Tooltip:
+                FieldBasedTooltip:
+                  AggregationVisibility: HIDDEN
+                  TooltipFields:
+                  - FieldTooltipItem:
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.channel_id.2.1736841716454
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.event_timestamp.3.1737119992563
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 4484e125-6261-4705-849a-17b1ce947099.3.1737629114702
+                      Visibility: VISIBLE
+                  TooltipTitleType: PRIMARY_VALUE
+                SelectedTooltipType: BASIC
+                TooltipVisibility: VISIBLE
+              Type: LINE
+            ColumnHierarchies:
+            - DateTimeHierarchy:
+                DrillDownFilters: []
+                HierarchyId: 018b602c-658b-4e94-9757-794e44d28cf8
+            Subtitle:
+              Visibility: VISIBLE
+            Title:
+              FormatText:
+                RichText: |-
+                  <visual-title>
+                    <inline font-size="14px">Success Rate per Channel ID</inline>
+                  </visual-title>
+              Visibility: VISIBLE
+            VisualId: b196989f-6efd-457c-bdfc-32e0ccc4f8e5
+        - LineChartVisual:
+            Actions: []
+            ChartConfiguration:
+              DataLabels:
+                Overlap: DISABLE_OVERLAP
+                Visibility: HIDDEN
+              FieldWells:
+                LineChartAggregatedFieldWells:
+                  Category:
+                  - DateDimensionField:
+                      Column:
+                        ColumnName: event_timestamp
+                        DataSetIdentifier: mpv2_logs_ingress
+                      DateGranularity: SECOND
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.event_timestamp.2.1737119974204
+                      HierarchyId: b166fb3a-8a6d-4496-9619-d50c08d3527d
+                  Colors:
+                  - CategoricalDimensionField:
+                      Column:
+                        ColumnName: channel_id
+                        DataSetIdentifier: mpv2_logs_ingress
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.channel_id.2.1737119428895
+                  Values:
+                  - NumericalMeasureField:
+                      Column:
+                        ColumnName: Total-200-status-code
+                        DataSetIdentifier: mpv2_logs_ingress
+                      FieldId: 0c9414cd-8318-4225-af34-c9385f2fa471.2.1737121211249
+              Legend:
+                Position: BOTTOM
+                Title:
+                  Visibility: VISIBLE
+                Visibility: VISIBLE
+              SortConfiguration:
+                CategorySort:
+                - FieldSort:
+                    Direction: DESC
+                    FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.event_timestamp.2.1737119974204
+              Tooltip:
+                FieldBasedTooltip:
+                  AggregationVisibility: HIDDEN
+                  TooltipFields:
+                  - FieldTooltipItem:
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.channel_id.2.1737119428895
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.event_timestamp.2.1737119974204
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 0c9414cd-8318-4225-af34-c9385f2fa471.2.1737121211249
+                      Visibility: VISIBLE
+                  TooltipTitleType: PRIMARY_VALUE
+                SelectedTooltipType: BASIC
+                TooltipVisibility: VISIBLE
+              Type: LINE
+            ColumnHierarchies:
+            - DateTimeHierarchy:
+                DrillDownFilters: []
+                HierarchyId: b166fb3a-8a6d-4496-9619-d50c08d3527d
+            Subtitle:
+              Visibility: VISIBLE
+            Title:
+              FormatText:
+                RichText: |-
+                  <visual-title>
+                    <inline font-size="14px">Total 200 Status Code per Channel ID</inline>
+                  </visual-title>
+              Visibility: VISIBLE
+            VisualId: a7bafa96-fa05-402e-8846-186187da8944
+        - LineChartVisual:
+            Actions: []
+            ChartConfiguration:
+              DataLabels:
+                Overlap: DISABLE_OVERLAP
+                Visibility: HIDDEN
+              FieldWells:
+                LineChartAggregatedFieldWells:
+                  Category:
+                  - DateDimensionField:
+                      Column:
+                        ColumnName: event_timestamp
+                        DataSetIdentifier: mpv2_logs_ingress
+                      DateGranularity: SECOND
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.event_timestamp.2.1737119983344
+                      HierarchyId: 44bf405b-574c-4d85-8ff9-8f0e79edc6d1
+                  Colors:
+                  - CategoricalDimensionField:
+                      Column:
+                        ColumnName: channel_id
+                        DataSetIdentifier: mpv2_logs_ingress
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.channel_id.2.1735285431368
+                  Values:
+                  - NumericalMeasureField:
+                      AggregationFunction:
+                        SimpleNumericalAggregation: SUM
+                      Column:
+                        ColumnName: ingest errors
+                        DataSetIdentifier: mpv2_logs_ingress
+                      FieldId: 5570686a-4bea-494c-971d-284b743996dd.2.1737629255342
+              Legend:
+                Position: BOTTOM
+              SortConfiguration:
+                CategoryItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                CategorySort:
+                - FieldSort:
+                    Direction: DESC
+                    FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.event_timestamp.2.1737119983344
+                ColorItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                SmallMultiplesLimitConfiguration:
+                  OtherCategories: INCLUDE
+              Tooltip:
+                FieldBasedTooltip:
+                  AggregationVisibility: HIDDEN
+                  TooltipFields:
+                  - FieldTooltipItem:
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.channel_id.2.1735285431368
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.event_timestamp.2.1737119983344
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 5570686a-4bea-494c-971d-284b743996dd.2.1737629255342
+                      Visibility: VISIBLE
+                  TooltipTitleType: PRIMARY_VALUE
+                SelectedTooltipType: DETAILED
+                TooltipVisibility: VISIBLE
+              Type: LINE
+            ColumnHierarchies:
+            - DateTimeHierarchy:
+                DrillDownFilters: []
+                HierarchyId: 44bf405b-574c-4d85-8ff9-8f0e79edc6d1
+            Subtitle:
+              Visibility: VISIBLE
+            Title:
+              FormatText:
+                RichText: <visual-title>Total 4xx &amp; 5xx status code per Channel ID</visual-title>
+              Visibility: VISIBLE
+            VisualId: b84d6e52-8faa-4048-b659-c2f372534031
+        - LineChartVisual:
+            Actions: []
+            ChartConfiguration:
+              DataLabels:
+                Overlap: DISABLE_OVERLAP
+                Visibility: HIDDEN
+              FieldWells:
+                LineChartAggregatedFieldWells:
+                  Category:
+                  - DateDimensionField:
+                      Column:
+                        ColumnName: event_timestamp
+                        DataSetIdentifier: mpv2_logs_ingress
+                      DateGranularity: SECOND
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.event_timestamp.3.1737118905102
+                      HierarchyId: bcee1615-f6b0-4f88-8ecf-cfd92c295999
+                  Colors:
+                  - CategoricalDimensionField:
+                      Column:
+                        ColumnName: channel_id
+                        DataSetIdentifier: mpv2_logs_ingress
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.channel_id.2.1735298451554
+                  SmallMultiples:
+                  - NumericalDimensionField:
+                      Column:
+                        ColumnName: input_index
+                        DataSetIdentifier: mpv2_logs_ingress
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.input_index.3.1737118873676
+                  Values:
+                  - CategoricalMeasureField:
+                      AggregationFunction: COUNT
+                      Column:
+                        ColumnName: request
+                        DataSetIdentifier: mpv2_logs_ingress
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.request.2.1736841625283
+              Legend:
+                Height: 39px
+                Position: BOTTOM
+                Visibility: VISIBLE
+              SortConfiguration:
+                CategoryItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                CategorySort:
+                - FieldSort:
+                    Direction: DESC
+                    FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.event_timestamp.3.1737118905102
+                ColorItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                SmallMultiplesLimitConfiguration:
+                  OtherCategories: INCLUDE
+              Tooltip:
+                FieldBasedTooltip:
+                  AggregationVisibility: HIDDEN
+                  TooltipFields:
+                  - FieldTooltipItem:
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.channel_id.2.1735298451554
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.request.2.1736841625283
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.input_index.3.1737118873676
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.event_timestamp.3.1737118905102
+                      Visibility: VISIBLE
+                  TooltipTitleType: PRIMARY_VALUE
+                SelectedTooltipType: DETAILED
+                TooltipVisibility: VISIBLE
+              Type: LINE
+            ColumnHierarchies:
+            - DateTimeHierarchy:
+                DrillDownFilters: []
+                HierarchyId: bcee1615-f6b0-4f88-8ecf-cfd92c295999
+            Subtitle:
+              Visibility: VISIBLE
+            Title:
+              FormatText:
+                RichText: <visual-title>Channel Activity (Total Request Over Time) per Input
+                  Index</visual-title>
+              Visibility: VISIBLE
+            VisualId: 1aae73aa-53c1-405a-b163-90f0cad43f53
+        - LineChartVisual:
+            Actions: []
+            ChartConfiguration:
+              DataLabels:
+                Overlap: DISABLE_OVERLAP
+                Visibility: HIDDEN
+              FieldWells:
+                LineChartAggregatedFieldWells:
+                  Category:
+                  - DateDimensionField:
+                      Column:
+                        ColumnName: event_timestamp
+                        DataSetIdentifier: mpv2_logs_ingress
+                      DateGranularity: SECOND
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.event_timestamp.3.1737120033236
+                      HierarchyId: f970a60f-75df-440f-8fba-dde254d20308
+                  Colors:
+                  - CategoricalDimensionField:
+                      Column:
+                        ColumnName: channel_id
+                        DataSetIdentifier: mpv2_logs_ingress
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.channel_id.3.1737629422453
+                  SmallMultiples:
+                  - NumericalDimensionField:
+                      Column:
+                        ColumnName: input_index
+                        DataSetIdentifier: mpv2_logs_ingress
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.input_index.3.1737629431186
+                  Values:
+                  - NumericalMeasureField:
+                      Column:
+                        ColumnName: Ingest-Success-Rate
+                        DataSetIdentifier: mpv2_logs_ingress
+                      FieldId: 4484e125-6261-4705-849a-17b1ce947099.3.1737119700889
+                      FormatConfiguration:
+                        FormatConfiguration:
+                          PercentageDisplayFormatConfiguration:
+                            NegativeValueConfiguration:
+                              DisplayMode: NEGATIVE
+                            NullValueFormatConfiguration:
+                              NullString: 'null'
+                            SeparatorConfiguration:
+                              DecimalSeparator: DOT
+                              ThousandsSeparator:
+                                Symbol: COMMA
+                                Visibility: VISIBLE
+                            Suffix: '%'
+              Legend:
+                Position: BOTTOM
+              SortConfiguration:
+                CategoryItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                CategorySort:
+                - FieldSort:
+                    Direction: DESC
+                    FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.event_timestamp.3.1737120033236
+                ColorItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                SmallMultiplesLimitConfiguration:
+                  OtherCategories: INCLUDE
+              Tooltip:
+                FieldBasedTooltip:
+                  AggregationVisibility: HIDDEN
+                  TooltipFields:
+                  - FieldTooltipItem:
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.channel_id.3.1737629422453
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 4484e125-6261-4705-849a-17b1ce947099.3.1737119700889
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.event_timestamp.3.1737120033236
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.input_index.3.1737629431186
+                      Visibility: VISIBLE
+                  TooltipTitleType: PRIMARY_VALUE
+                SelectedTooltipType: DETAILED
+                TooltipVisibility: VISIBLE
+              Type: LINE
+            ColumnHierarchies:
+            - DateTimeHierarchy:
+                DrillDownFilters: []
+                HierarchyId: f970a60f-75df-440f-8fba-dde254d20308
+            Subtitle:
+              Visibility: VISIBLE
+            Title:
+              FormatText:
+                RichText: <visual-title>Success Rate per Input Index</visual-title>
+              Visibility: VISIBLE
+            VisualId: 4cddfcd9-2ba3-4d3e-9bc4-14dfb1bab17a
+        - LineChartVisual:
+            Actions: []
+            ChartConfiguration:
+              DataLabels:
+                Overlap: DISABLE_OVERLAP
+                Visibility: HIDDEN
+              FieldWells:
+                LineChartAggregatedFieldWells:
+                  Category:
+                  - DateDimensionField:
+                      Column:
+                        ColumnName: event_timestamp
+                        DataSetIdentifier: mpv2_logs_ingress
+                      DateGranularity: DAY
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.event_timestamp.3.1737120039998
+                      HierarchyId: de20fb97-a703-49d4-b5a6-0e501135feee
+                  Colors:
+                  - CategoricalDimensionField:
+                      Column:
+                        ColumnName: channel_id
+                        DataSetIdentifier: mpv2_logs_ingress
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.channel_id.3.1737629409388
+                  SmallMultiples:
+                  - NumericalDimensionField:
+                      Column:
+                        ColumnName: input_index
+                        DataSetIdentifier: mpv2_logs_ingress
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.input_index.2.1737629401388
+                  Values:
+                  - NumericalMeasureField:
+                      AggregationFunction:
+                        SimpleNumericalAggregation: SUM
+                      Column:
+                        ColumnName: ingest errors
+                        DataSetIdentifier: mpv2_logs_ingress
+                      FieldId: 5570686a-4bea-494c-971d-284b743996dd.3.1736841200415
+                      FormatConfiguration:
+                        FormatConfiguration:
+                          PercentageDisplayFormatConfiguration:
+                            NegativeValueConfiguration:
+                              DisplayMode: NEGATIVE
+                            NullValueFormatConfiguration:
+                              NullString: 'null'
+                            SeparatorConfiguration:
+                              DecimalSeparator: DOT
+                              ThousandsSeparator:
+                                Symbol: COMMA
+                                Visibility: VISIBLE
+                            Suffix: '%'
+              Legend:
+                Position: BOTTOM
+              SortConfiguration:
+                CategoryItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                CategorySort:
+                - FieldSort:
+                    Direction: DESC
+                    FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.event_timestamp.3.1737120039998
+                ColorItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                SmallMultiplesLimitConfiguration:
+                  OtherCategories: INCLUDE
+              Tooltip:
+                FieldBasedTooltip:
+                  AggregationVisibility: HIDDEN
+                  TooltipFields:
+                  - FieldTooltipItem:
+                      FieldId: 5570686a-4bea-494c-971d-284b743996dd.3.1736841200415
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.event_timestamp.3.1737120039998
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.input_index.2.1737629401388
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.channel_id.3.1737629409388
+                      Visibility: VISIBLE
+                  TooltipTitleType: PRIMARY_VALUE
+                SelectedTooltipType: DETAILED
+                TooltipVisibility: VISIBLE
+              Type: LINE
+            ColumnHierarchies:
+            - DateTimeHierarchy:
+                DrillDownFilters: []
+                HierarchyId: de20fb97-a703-49d4-b5a6-0e501135feee
+            Subtitle:
+              Visibility: VISIBLE
+            Title:
+              FormatText:
+                RichText: <visual-title>Ingest Errors  per Input Index</visual-title>
+              Visibility: VISIBLE
+            VisualId: 70b52d75-40db-4722-95a4-873bf11d7bd7
+        - LineChartVisual:
+            Actions: []
+            ChartConfiguration:
+              DataLabels:
+                Overlap: DISABLE_OVERLAP
+                Visibility: HIDDEN
+              FieldWells:
+                LineChartAggregatedFieldWells:
+                  Category:
+                  - DateDimensionField:
+                      Column:
+                        ColumnName: event_timestamp
+                        DataSetIdentifier: mpv2_logs_ingress
+                      DateGranularity: SECOND
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.event_timestamp.2.1737120066487
+                      HierarchyId: 643a8a7c-b3ea-4a68-9e3e-e4833ab93c82
+                  Colors:
+                  - CategoricalDimensionField:
+                      Column:
+                        ColumnName: channel_id
+                        DataSetIdentifier: mpv2_logs_ingress
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.channel_id.0.1735305637173
+                  Values:
+                  - NumericalMeasureField:
+                      AggregationFunction:
+                        PercentileAggregation:
+                          PercentileValue: 95.0
+                      Column:
+                        ColumnName: time_to_first_byte
+                        DataSetIdentifier: mpv2_logs_ingress
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.time_to_first_byte.2.1735305676790
+              Legend:
+                Position: BOTTOM
+                Visibility: VISIBLE
+              SortConfiguration:
+                CategoryItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                CategorySort:
+                - FieldSort:
+                    Direction: DESC
+                    FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.event_timestamp.2.1737120066487
+                ColorItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                SmallMultiplesLimitConfiguration:
+                  OtherCategories: INCLUDE
+              Tooltip:
+                FieldBasedTooltip:
+                  AggregationVisibility: HIDDEN
+                  TooltipFields:
+                  - FieldTooltipItem:
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.channel_id.0.1735305637173
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.time_to_first_byte.2.1735305676790
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.event_timestamp.2.1737120066487
+                      Visibility: VISIBLE
+                  TooltipTitleType: PRIMARY_VALUE
+                SelectedTooltipType: DETAILED
+                TooltipVisibility: VISIBLE
+              Type: LINE
+            ColumnHierarchies:
+            - DateTimeHierarchy:
+                DrillDownFilters: []
+                HierarchyId: 643a8a7c-b3ea-4a68-9e3e-e4833ab93c82
+            Subtitle:
+              Visibility: VISIBLE
+            Title:
+              FormatText:
+                RichText: "<visual-title>\n  Processing Time per Channel Id\n  <br/>\n \
+                  \ <b>timeToFirstByte\_</b>\n  The number of seconds that MediaPackage\
+                  \ spent processing your request\n</visual-title>"
+              Visibility: VISIBLE
+            VisualId: 342e59a0-e1b3-4be5-81f8-13b12c0b793b
+        - TableVisual:
+            Actions: []
+            ChartConfiguration:
+              FieldOptions:
+                Order: []
+                SelectedFieldOptions:
+                - FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.channel_id.1.1735306452818
+                  Width: 278px
+                - FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.input_type.2.1737119807098
+                  Width: 276px
+              FieldWells:
+                TableAggregatedFieldWells:
+                  GroupBy:
+                  - CategoricalDimensionField:
+                      Column:
+                        ColumnName: channel_id
+                        DataSetIdentifier: mpv2_logs_ingress
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.channel_id.1.1735306452818
+                  - CategoricalDimensionField:
+                      Column:
+                        ColumnName: input_type
+                        DataSetIdentifier: mpv2_logs_ingress
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.input_type.2.1737119807098
+                  Values: []
+              SortConfiguration: {}
+              TableOptions:
+                CellStyle:
+                  Height: 25
+                HeaderStyle:
+                  Height: 25
+                  TextWrap: WRAP
+                RowAlternateColorOptions:
+                  Status: DISABLED
+                  UsePrimaryBackgroundColor: ENABLED
+            Subtitle:
+              Visibility: VISIBLE
+            Title:
+              FormatText:
+                RichText: <visual-title>Input type / Channel Id</visual-title>
+              Visibility: VISIBLE
+            VisualId: 927f5dda-5925-4466-ad68-50f4f28552d8
+        - LineChartVisual:
+            Actions: []
+            ChartConfiguration:
+              DataLabels:
+                Overlap: DISABLE_OVERLAP
+                Visibility: HIDDEN
+              FieldWells:
+                LineChartAggregatedFieldWells:
+                  Category:
+                  - DateDimensionField:
+                      Column:
+                        ColumnName: event_timestamp
+                        DataSetIdentifier: mpv2_logs_ingress
+                      DateGranularity: SECOND
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.event_timestamp.2.1737120050115
+                      HierarchyId: 47ec27a1-1306-419c-8bad-d173728b11ac
+                  Colors:
+                  - CategoricalDimensionField:
+                      Column:
+                        ColumnName: channel_id
+                        DataSetIdentifier: mpv2_logs_ingress
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.channel_id.2.1736841428813
+                  Values:
+                  - NumericalMeasureField:
+                      AggregationFunction:
+                        SimpleNumericalAggregation: AVERAGE
+                      Column:
+                        ColumnName: received_bytes
+                        DataSetIdentifier: mpv2_logs_ingress
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.received_bytes.0.1735306700670
+              Legend:
+                Position: BOTTOM
+                Width: 454px
+              SortConfiguration:
+                CategoryItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                CategorySort:
+                - FieldSort:
+                    Direction: DESC
+                    FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.event_timestamp.2.1737120050115
+                ColorItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                SmallMultiplesLimitConfiguration:
+                  OtherCategories: INCLUDE
+              Tooltip:
+                FieldBasedTooltip:
+                  AggregationVisibility: HIDDEN
+                  TooltipFields:
+                  - FieldTooltipItem:
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.received_bytes.0.1735306700670
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.channel_id.2.1736841428813
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.event_timestamp.2.1737120050115
+                      Visibility: VISIBLE
+                  TooltipTitleType: PRIMARY_VALUE
+                SelectedTooltipType: DETAILED
+                TooltipVisibility: VISIBLE
+              Type: LINE
+            ColumnHierarchies:
+            - DateTimeHierarchy:
+                DrillDownFilters: []
+                HierarchyId: 47ec27a1-1306-419c-8bad-d173728b11ac
+            Subtitle:
+              Visibility: VISIBLE
+            Title:
+              FormatText:
+                RichText: <visual-title>Average Received Bytes per Channel ID</visual-title>
+              Visibility: VISIBLE
+            VisualId: 763a8276-e722-4e8f-abc8-b022e894fc89
+        - LineChartVisual:
+            Actions: []
+            ChartConfiguration:
+              DataLabels:
+                Overlap: DISABLE_OVERLAP
+                Visibility: HIDDEN
+              FieldWells:
+                LineChartAggregatedFieldWells:
+                  Category:
+                  - DateDimensionField:
+                      Column:
+                        ColumnName: event_timestamp
+                        DataSetIdentifier: mpv2_logs_ingress
+                      DateGranularity: SECOND
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.event_timestamp.2.1737120014669
+                      HierarchyId: 782f507a-431c-4cfc-a8c3-adb0231ecd01
+                  Colors:
+                  - CategoricalDimensionField:
+                      Column:
+                        ColumnName: channel_id
+                        DataSetIdentifier: mpv2_logs_ingress
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.channel_id.2.1736949494218
+                  Values:
+                  - NumericalMeasureField:
+                      AggregationFunction:
+                        SimpleNumericalAggregation: AVERAGE
+                      Column:
+                        ColumnName: received_bytes
+                        DataSetIdentifier: mpv2_logs_ingress
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.received_bytes.1.1736507238944
+              Legend:
+                Position: BOTTOM
+              SortConfiguration:
+                CategoryItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                CategorySort:
+                - FieldSort:
+                    Direction: DESC
+                    FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.event_timestamp.2.1737120014669
+                ColorItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                SmallMultiplesLimitConfiguration:
+                  OtherCategories: INCLUDE
+              Tooltip:
+                FieldBasedTooltip:
+                  AggregationVisibility: HIDDEN
+                  TooltipFields:
+                  - FieldTooltipItem:
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.channel_id.2.1736949494218
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.received_bytes.1.1736507238944
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.event_timestamp.2.1737120014669
+                      Visibility: VISIBLE
+                  TooltipTitleType: PRIMARY_VALUE
+                SelectedTooltipType: DETAILED
+                TooltipVisibility: VISIBLE
+              Type: LINE
+            ColumnHierarchies:
+            - DateTimeHierarchy:
+                DrillDownFilters: []
+                HierarchyId: 782f507a-431c-4cfc-a8c3-adb0231ecd01
+            Subtitle:
+              Visibility: VISIBLE
+            Title:
+              FormatText:
+                RichText: <visual-title>Average Received Bytes over Time per Channel Id</visual-title>
+              Visibility: VISIBLE
+            VisualId: 9fd8835b-3da2-421c-b57b-a1f79e7675b9
+        - LineChartVisual:
+            Actions: []
+            ChartConfiguration:
+              DataLabels:
+                Overlap: DISABLE_OVERLAP
+                Visibility: HIDDEN
+              FieldWells:
+                LineChartAggregatedFieldWells:
+                  Category:
+                  - DateDimensionField:
+                      Column:
+                        ColumnName: event_timestamp
+                        DataSetIdentifier: mpv2_logs_ingress
+                      DateGranularity: SECOND
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.event_timestamp.2.1737120024593
+                      HierarchyId: 6ae5bb1f-73cb-4d28-b7eb-38e32afd995b
+                  Colors:
+                  - CategoricalDimensionField:
+                      Column:
+                        ColumnName: channel_id
+                        DataSetIdentifier: mpv2_logs_ingress
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.channel_id.2.1737015198926
+                  Values:
+                  - NumericalMeasureField:
+                      AggregationFunction:
+                        SimpleNumericalAggregation: AVERAGE
+                      Column:
+                        ColumnName: sent_bytes
+                        DataSetIdentifier: mpv2_logs_ingress
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.sent_bytes.1.1736507324038
+              Legend:
+                Position: BOTTOM
+              SortConfiguration:
+                CategoryItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                CategorySort:
+                - FieldSort:
+                    Direction: DESC
+                    FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.event_timestamp.2.1737120024593
+                ColorItemsLimitConfiguration:
+                  OtherCategories: INCLUDE
+                SmallMultiplesLimitConfiguration:
+                  OtherCategories: INCLUDE
+              Tooltip:
+                FieldBasedTooltip:
+                  AggregationVisibility: HIDDEN
+                  TooltipFields:
+                  - FieldTooltipItem:
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.sent_bytes.1.1736507324038
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.channel_id.2.1737015198926
+                      Visibility: VISIBLE
+                  - FieldTooltipItem:
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.event_timestamp.2.1737120024593
+                      Visibility: VISIBLE
+                  TooltipTitleType: PRIMARY_VALUE
+                SelectedTooltipType: DETAILED
+                TooltipVisibility: VISIBLE
+              Type: LINE
+            ColumnHierarchies:
+            - DateTimeHierarchy:
+                DrillDownFilters: []
+                HierarchyId: 6ae5bb1f-73cb-4d28-b7eb-38e32afd995b
+            Subtitle:
+              Visibility: VISIBLE
+            Title:
+              FormatText:
+                RichText: <visual-title>Average Sent Bytes Over Time per Channel ID</visual-title>
+              Visibility: VISIBLE
+            VisualId: c67aa542-9c60-4024-9e20-644a94e48cac
+        - TableVisual:
+            Actions: []
+            ChartConfiguration:
+              FieldWells:
+                TableAggregatedFieldWells:
+                  GroupBy:
+                  - NumericalDimensionField:
+                      Column:
+                        ColumnName: input_index
+                        DataSetIdentifier: mpv2_logs_ingress
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.input_index.0.1737120514924
+                  - CategoricalDimensionField:
+                      Column:
+                        ColumnName: client_ip
+                        DataSetIdentifier: mpv2_logs_ingress
+                      FieldId: 3aab5842-ef57-4675-a037-6c686781ac0e.client_ip.1.1737120521151
+                  Values: []
+              SortConfiguration: {}
+            Subtitle:
+              Visibility: VISIBLE
+            Title:
+              FormatText:
+                RichText: <visual-title>Input index &amp; Pipeline IP mapping</visual-title>
+              Visibility: VISIBLE
+            VisualId: ded355b6-fcd1-4eec-90b1-9a0bd9a808d2
+datasets:
+  mpv2_logs_ingress:
+    data:
+      DataSetId: bdc7b98e-a9a0-4e6a-acd8-cafbf5f9b58d
+      Name: mpv2_logs_ingress
+      PhysicalTableMap:
+        b2599770-8131-455b-8b59-2882f37c6a92:
+          RelationalTable:
+            DataSourceArn: ${athena_datasource_arn}
+            Catalog: AwsDataCatalog
+            Schema: ${athena_database_name}
+            Name: mpv2_logs_ingress
+            InputColumns:
+            - Name: resource_arn
+              Type: STRING
+            - Name: event_timestamp
+              Type: DATETIME
+            - Name: client_ip
+              Type: STRING
+            - Name: time_to_first_byte
+              Type: DECIMAL
+            - Name: status_code
+              Type: INTEGER
+            - Name: received_bytes
+              Type: INTEGER
+            - Name: sent_bytes
+              Type: INTEGER
+            - Name: method
+              Type: STRING
+            - Name: request
+              Type: STRING
+            - Name: protocol
+              Type: STRING
+            - Name: user_agent
+              Type: STRING
+            - Name: domain_name
+              Type: STRING
+            - Name: request_id
+              Type: STRING
+            - Name: account
+              Type: STRING
+            - Name: channel_id
+              Type: STRING
+            - Name: channel_arn
+              Type: STRING
+            - Name: channel_group_id
+              Type: STRING
+            - Name: input_type
+              Type: STRING
+            - Name: input_index
+              Type: INTEGER
+      LogicalTableMap:
+        3aab5842-ef57-4675-a037-6c686781ac0e:
+          Alias: mpv2_logs_ingress
+          DataTransforms:
+          - CreateColumnsOperation:
+              Columns:
+              - ColumnName: Total-requests
+                ColumnId: 2f70cf12-2de1-4dcd-be9b-9364f8d86bce
+                Expression: count({request})
+          - CreateColumnsOperation:
+              Columns:
+              - ColumnName: Total-200-status-code
+                ColumnId: 0c9414cd-8318-4225-af34-c9385f2fa471
+                Expression: count({status_code}=200)
+          - CreateColumnsOperation:
+              Columns:
+              - ColumnName: Ingest-Success-Rate
+                ColumnId: 4484e125-6261-4705-849a-17b1ce947099
+                Expression: '{Total-200-status-code}/{Total-requests}'
+          - ProjectOperation:
+              ProjectedColumns:
+              - resource_arn
+              - event_timestamp
+              - client_ip
+              - time_to_first_byte
+              - status_code
+              - received_bytes
+              - sent_bytes
+              - method
+              - request
+              - protocol
+              - user_agent
+              - domain_name
+              - request_id
+              - account
+              - channel_id
+              - channel_arn
+              - channel_group_id
+              - input_type
+              - input_index
+              - Total-requests
+              - Total-200-status-code
+              - Ingest-Success-Rate
+          Source:
+            PhysicalTableId: b2599770-8131-455b-8b59-2882f37c6a92
+      ImportMode: DIRECT_QUERY
+    dependsOn:
+      views:
+      - mpv2_logs_ingress
+    schedules:
+    - default
+crawlers: {}
+views:
+  mpv2_logs_ingress:
+    data: |-
+      CREATE TABLE "${athena_database_name}".mpv2_logs_ingress (
+        resource_arn string,
+        event_timestamp timestamp,
+        client_ip string,
+        time_to_first_byte double,
+        status_code int,
+        received_bytes bigint,
+        sent_bytes bigint,
+        method string,
+        request string,
+        protocol string,
+        user_agent string,
+        domain_name string,
+        request_id string,
+        account string,
+        channel_id string,
+        channel_arn string,
+        channel_group_id string,
+        input_type string,
+        input_index int)
+      PARTITIONED BY (day(`event_timestamp`))
+      LOCATION '${s3path}'
+      TBLPROPERTIES (
+        'table_type'='iceberg',
+        'write_compression'='zstd',
+        'optimize_rewrite_delete_file_threshold'='10'
+      );
+    parameters:
+      s3path:
+        default: s3://mpv2-log-test/mpv2-logs/mediapackage-v2/ingress
+        description: S3 Path for mpv2_logs_ingress table
