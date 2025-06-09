@@ -1,0 +1,519 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudFormation Template - AWS Elemental MediaPackage V2 Access Logs
+  Analysis Solution.
+
+Parameters:
+  MPV2ChannelGroupArn:
+    Type: String
+    Description: AWS Elemental MediaPackage V2 - Channel Group ARN.
+
+  FirehoseEncryptionType:
+    Type: String
+    AllowedValues:
+      - AWS_OWNED_CMK
+      - CUSTOMER_MANAGED_CMK
+    Description: Amazon Data Firehose - Encryption type.
+    Default: AWS_OWNED_CMK
+
+  FirehoseEncryptionKeyArn:
+    Type: String
+    Description: Amazon Data Firehose - KMS symmetric key ARN. Set only if
+      encryption type='CUSTOMER_MANAGED_CMK'.
+    Default: ''
+
+  FirehoseBufferSize:
+    Type: Number
+    MinValue: '1'
+    MaxValue: '128'
+    Description: Amazon Data Firehose - Buffer size (in MBs). Value between 1 and 128.
+    Default: '64'
+
+  FirehoseBufferInterval:
+    Type: Number
+    MinValue: '0'
+    MaxValue: '900'
+    Description: Amazon Data Firehose - Buffer time (in seconds). Value between 0 and 900.
+    Default: '60'
+
+  FirehoseRetryDuration:
+    Type: Number
+    MinValue: '0'
+    MaxValue: '900'
+    Description: Amazon Data Firehose - Retry period duration (in seconds). Value
+      between 0 and 7200.
+    Default: '60'
+
+  FirehoseLogRetention:
+    Type: Number
+    MinValue: '0'
+    MaxValue: '900'
+    Description: Amazon Data Firehose - CloudWatch Logs retention period (in days).
+      Value between 1 and 3653.
+    Default: '30'
+
+  S3DestinationBucket:
+    Type: String
+    Description: Amazon S3 - Destination Bucket (Apache Iceberg table storage).
+
+  S3DestinationPrefix:
+    Type: String
+    Description: Amazon S3 - Destination Prefix (Apache Iceberg table storage).
+    Default: mpv2-logs
+
+  AthenaDatabase:
+    Type: String
+    Description: Amazon Athena - Database name.
+    Default: mpv2_logs_db
+
+  AthenaTableIngress:
+    Type: String
+    Description: Amazon Athena - Table name (MPv2 ingress logs).
+    Default: mpv2_logs_ingress
+
+  AthenaTableEgress:
+    Type: String
+    Description: Amazon Athena - Table name (MPv2 egress logs).
+    Default: mpv2_logs_egress
+
+Conditions:
+  FirehoseIsCustomerManagedCMK: !Equals
+    - !Ref FirehoseEncryptionType
+    - CUSTOMER_MANAGED_CMK
+
+Resources:
+  MPV2DeliverySourceIngress:
+    Type: AWS::Logs::DeliverySource
+    Properties:
+      Name: !Sub ${AWS::StackName}-source-ingress
+      LogType: INGRESS_ACCESS_LOGS
+      ResourceArn: !Ref MPV2ChannelGroupArn
+
+  MPV2DeliverySourceEgress:
+    Type: AWS::Logs::DeliverySource
+    Properties:
+      Name: !Sub ${AWS::StackName}-source-egress
+      LogType: EGRESS_ACCESS_LOGS
+      ResourceArn: !Ref MPV2ChannelGroupArn
+
+  MPV2DeliveryDestinationIngress:
+    Type: AWS::Logs::DeliveryDestination
+    Properties:
+      Name: !Sub ${AWS::StackName}-destination-ingress
+      DestinationResourceArn: !GetAtt FirehoseDeliveryStream.Arn
+      OutputFormat: json
+
+  MPV2DeliveryDestinationEgress:
+    Type: AWS::Logs::DeliveryDestination
+    Properties:
+      Name: !Sub ${AWS::StackName}-destination-egress
+      DestinationResourceArn: !GetAtt FirehoseDeliveryStream.Arn
+      OutputFormat: json
+
+  MPV2DeliveryIngress:
+    Type: AWS::Logs::Delivery
+    Properties:
+      DeliverySourceName: !Ref MPV2DeliverySourceIngress
+      DeliveryDestinationArn: !GetAtt MPV2DeliveryDestinationIngress.Arn
+
+  MPV2DeliveryEgress:
+    Type: AWS::Logs::Delivery
+    Properties:
+      DeliverySourceName: !Ref MPV2DeliverySourceEgress
+      DeliveryDestinationArn: !GetAtt MPV2DeliveryDestinationEgress.Arn
+
+  FirehoseRole:
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W28
+            reason: Need explicit name to give permissions.
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${AWS::StackName}-firehose-role
+      Description: IAM role - Amazon Data Firehose Delivery Stream to Iceberg.
+      ManagedPolicyArns:
+        - !Ref FirehosePolicy
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: firehose.amazonaws.com
+            Action:
+              - sts:AssumeRole
+
+  FirehosePolicy:
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W28
+            reason: Need explicit name to give permissions.
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: !Sub ${AWS::StackName}-firehose-policy
+      Description: IAM policy - Amazon Data Firehose Delivery Stream to Iceberg.
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AllowCWLogsDelivery
+            Effect: Allow
+            Action:
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Resource:
+              - !Sub arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/kinesisfirehose/${AWS::StackName}-firehose-stream
+              - !Sub arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/kinesisfirehose/${AWS::StackName}-firehose-stream:*
+          - Sid: AllowLambdaActionsOnTransformFunction
+            Effect: Allow
+            Action:
+              - lambda:InvokeFunction
+              - lambda:GetFunctionConfiguration
+            Resource: !GetAtt LambdaFirehoseFunction.Arn
+          - Sid: AllowS3ActionsOnDestinationBucket
+            Effect: Allow
+            Action:
+              - s3:AbortMultipartUpload
+              - s3:GetBucketLocation
+              - s3:GetObject
+              - s3:ListBucket
+              - s3:ListBucketMultipartUploads
+              - s3:PutObject
+              - s3:DeleteObject
+            Resource:
+              - !Sub arn:aws:s3:::${S3DestinationBucket}
+              - !Sub arn:aws:s3:::${S3DestinationBucket}/${S3DestinationPrefix}/*
+          - Sid: AllowGlueActionsOnIcebergTables
+            Effect: Allow
+            Action:
+              - glue:GetDatabase
+              - glue:GetTable
+              - glue:UpdateTable
+            Resource:
+              - !Sub arn:${AWS::Partition}:glue:${AWS::Region}:${AWS::AccountId}:catalog
+              - !Sub arn:${AWS::Partition}:glue:${AWS::Region}:${AWS::AccountId}:database/${AthenaDatabase}
+              - !Sub arn:${AWS::Partition}:glue:${AWS::Region}:${AWS::AccountId}:table/${AthenaDatabase}/${AthenaTableIngress}
+              - !Sub arn:${AWS::Partition}:glue:${AWS::Region}:${AWS::AccountId}:table/${AthenaDatabase}/${AthenaTableEgress}
+          - !If
+            - FirehoseIsCustomerManagedCMK
+            - Sid: AllowCustomerManagedCMK
+              Effect: Allow
+              Action:
+                - kms:GenerateDataKey
+                - kms:Decrypt
+              Resource:
+                - !Ref FirehoseEncryptionKeyArn
+            - !Ref AWS::NoValue
+
+  LambdaFirehoseRole:
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W28
+            reason: Need explicit name to give permissions.
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${AWS::StackName}-lambda-firehose-role
+      Description: IAM execution role - Lambda function used by Data Firehose for MPv2
+        logs processing.
+      ManagedPolicyArns:
+        - !Ref LambdaFirehosePolicy
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+
+  LambdaFirehosePolicy:
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W28
+            reason: Need explicit name to give permissions.
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: !Sub ${AWS::StackName}-lambda-firehose-policy
+      Description: IAM policy - Lambda function used by Data Firehose for MPv2 logs
+        processing.
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Resource:
+              - !Sub arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${AWS::StackName}-lambda-firehose-function
+              - !Sub arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${AWS::StackName}-lambda-firehose-function:*
+          - Effect: Allow
+            Action:
+              - logs:CreateLogGroup
+            Resource: !Sub arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:*
+
+  LambdaFirehoseFunction:
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W58
+            reason: Lambda function has the minimum CloudWatch permissions.
+          - id: W89
+            reason: No need to access to VPC resources.
+          - id: W92
+            reason: No need for reserved concurrency.
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: AWS Lambda - Ffunction used by Data Firehose for MPv2 logs processing.
+      FunctionName: !Sub ${AWS::StackName}-lambda-firehose-function
+      Handler: index.lambda_handler
+      MemorySize: 128
+      Timeout: 300 # 5min
+      Runtime: python3.12
+      Role: !GetAtt LambdaFirehoseRole.Arn
+      Environment:
+        Variables:
+          DESTINATION_DB: !Ref AthenaDatabase
+          DESTINATION_TABLE_INGRESS: !Ref AthenaTableIngress
+          DESTINATION_TABLE_EGRESS: !Ref AthenaTableEgress
+      Code:
+        ZipFile: |
+          import base64
+          import json
+          import os
+
+          # Destination tables config
+          destination_db = os.environ["DESTINATION_DB"]
+          destination_tables = {
+              "ingress": os.environ["DESTINATION_TABLE_INGRESS"],
+              "egress": os.environ["DESTINATION_TABLE_EGRESS"]
+          }
+
+          def lambda_handler(event, context):
+              # Output records variable
+              records_output = {"records": []}
+
+              for record in event["records"]:
+                  # Get MediaPackage record
+                  record_id = record["recordId"]
+                  payload = base64.b64decode(record["data"]).decode("utf-8")
+                  payload = json.loads(payload)
+
+                  # Determine MediaPackage log type (ingress or egress)
+                  log_type = "egress" if "manifest_name" in payload.keys() else "ingress"
+
+                  # Event date transformation (precision 3 not supported by Athena Iceberg)
+                  payload["event_timestamp"] = payload["event_timestamp"] * 1000
+
+                  # Output record
+                  record_output = {
+                      "recordId": record_id,
+                      "result": "Ok",
+                      "data": base64.b64encode(json.dumps(payload).encode("utf-8")),
+                      "metadata": {
+                          "otfMetadata": {
+                              "destinationDatabaseName": destination_db,
+                              "destinationTableName": destination_tables[log_type],
+                              "operation": "insert",
+                              # "uniqueKeys": ["PK"]
+                          }
+                      }
+                  }
+                  # Append to output records
+                  records_output["records"].append(record_output)
+
+              # Show the number of processed records
+              print("Successfully processed {} records.".format(len(event["records"])))
+
+              # Return output records
+              return records_output
+
+  MPV2GlueDatabase:
+    Type: AWS::Glue::Database
+    Properties:
+      CatalogId: !Ref AWS::AccountId
+      DatabaseInput:
+        Name: !Ref AthenaDatabase
+        Description: Glue Data Catalog - MediaPackage V2 logs DB.
+
+  MPV2GlueTableIngress:
+    Type: AWS::Glue::Table
+    DependsOn: MPV2GlueDatabase
+    Properties:
+      CatalogId: !Ref AWS::AccountId
+      DatabaseName: !Ref MPV2GlueDatabase
+      OpenTableFormatInput:
+        IcebergInput:
+          MetadataOperation: CREATE
+          Version: 2
+      TableInput:
+        Name: !Ref AthenaTableIngress
+        Description: Glue Data Catalog - MediaPackage ingress logs table.
+        TableType: EXTERNAL_TABLE
+        StorageDescriptor:
+          Location: !Sub s3://${S3DestinationBucket}/${S3DestinationPrefix}/mediapackage-v2/ingress/
+          Columns:
+            - Name: resource_arn
+              Type: string
+            - Name: event_timestamp
+              Type: timestamp
+            - Name: client_ip
+              Type: string
+            - Name: time_to_first_byte
+              Type: double
+            - Name: status_code
+              Type: int
+            - Name: received_bytes
+              Type: bigint
+            - Name: sent_bytes
+              Type: bigint
+            - Name: method
+              Type: string
+            - Name: request
+              Type: string
+            - Name: protocol
+              Type: string
+            - Name: user_agent
+              Type: string
+            - Name: domain_name
+              Type: string
+            - Name: request_id
+              Type: string
+            - Name: account
+              Type: string
+            - Name: channel_id
+              Type: string
+            - Name: channel_arn
+              Type: string
+            - Name: channel_group_id
+              Type: string
+            - Name: input_type
+              Type: string
+            - Name: input_index
+              Type: int
+
+  MPV2GlueTableEgress:
+    Type: AWS::Glue::Table
+    DependsOn: MPV2GlueDatabase
+    Properties:
+      CatalogId: !Ref AWS::AccountId
+      DatabaseName: !Ref MPV2GlueDatabase
+      OpenTableFormatInput:
+        IcebergInput:
+          MetadataOperation: CREATE
+          Version: 2
+      TableInput:
+        Name: !Ref AthenaTableEgress
+        Description: Glue Data Catalog - MediaPackage egress logs table.
+        TableType: EXTERNAL_TABLE
+        StorageDescriptor:
+          Location: !Sub s3://${S3DestinationBucket}/${S3DestinationPrefix}/mediapackage-v2/egress/
+          Columns:
+            - Name: resource_arn
+              Type: string
+            - Name: event_timestamp
+              Type: timestamp
+            - Name: client_ip
+              Type: string
+            - Name: time_to_first_byte
+              Type: double
+            - Name: status_code
+              Type: int
+            - Name: received_bytes
+              Type: bigint
+            - Name: sent_bytes
+              Type: bigint
+            - Name: method
+              Type: string
+            - Name: request_uri_base
+              Type: string
+            - Name: request_query_params
+              Type: string
+            - Name: protocol
+              Type: string
+            - Name: user_agent
+              Type: string
+            - Name: domain_name
+              Type: string
+            - Name: request_id
+              Type: string
+            - Name: account
+              Type: string
+            - Name: channel_id
+              Type: string
+            - Name: channel_arn
+              Type: string
+            - Name: endpoint_id
+              Type: string
+            - Name: endpoint_arn
+              Type: string
+            - Name: channel_group_id
+              Type: string
+            - Name: manifest_name
+              Type: string
+            - Name: manifest_type
+              Type: string
+
+  FirehoseLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/kinesisfirehose/${AWS::StackName}-firehose-stream
+      RetentionInDays: !Ref FirehoseLogRetention
+      KmsKeyId: !If
+        - FirehoseIsCustomerManagedCMK
+        - !Ref FirehoseEncryptionKeyArn
+        - !Ref AWS::NoValue
+
+  FirehoseLogStream:
+    Type: AWS::Logs::LogStream
+    Properties:
+      LogGroupName: !Ref FirehoseLogGroup
+      LogStreamName: DestinationDelivery
+
+  FirehoseDeliveryStream:
+    Type: AWS::KinesisFirehose::DeliveryStream
+    Properties:
+      DeliveryStreamName: !Sub ${AWS::StackName}-firehose-stream
+      DeliveryStreamType: DirectPut
+      DeliveryStreamEncryptionConfigurationInput:
+        KeyType: !If
+          - FirehoseIsCustomerManagedCMK
+          - CUSTOMER_MANAGED_CMK
+          - AWS_OWNED_CMK
+        KeyARN: !If
+          - FirehoseIsCustomerManagedCMK
+          - !Ref FirehoseEncryptionKeyArn
+          - !Ref AWS::NoValue
+      IcebergDestinationConfiguration:
+        CatalogConfiguration:
+          CatalogArn: !Sub arn:${AWS::Partition}:glue:${AWS::Region}:${AWS::AccountId}:catalog
+        BufferingHints:
+          IntervalInSeconds: !Ref FirehoseBufferInterval
+          SizeInMBs: !Ref FirehoseBufferSize
+        ProcessingConfiguration:
+          Enabled: true
+          Processors:
+            - Type: Lambda
+              Parameters:
+                - ParameterName: LambdaArn
+                  ParameterValue: !GetAtt LambdaFirehoseFunction.Arn
+        RetryOptions:
+          DurationInSeconds: !Ref FirehoseRetryDuration
+        s3BackupMode: FailedDataOnly
+        RoleARN: !GetAtt FirehoseRole.Arn
+        S3Configuration:
+          BucketARN: !Sub arn:aws:s3:::${S3DestinationBucket}
+          BufferingHints:
+            IntervalInSeconds: !Ref FirehoseBufferInterval
+            SizeInMBs: !Ref FirehoseBufferSize
+          CompressionFormat: UNCOMPRESSED
+          ErrorOutputPrefix: !Sub ${S3DestinationPrefix}/mpv2-errors/
+          RoleARN: !GetAtt FirehoseRole.Arn
+          CloudWatchLoggingOptions:
+            Enabled: true
+            LogGroupName: !Sub /aws/kinesisfirehose/${AWS::StackName}-firehose-stream
+            LogStreamName: BackupDelivery
+        CloudWatchLoggingOptions:
+          Enabled: true
+          LogGroupName: !Sub /aws/kinesisfirehose/${AWS::StackName}-firehose-stream
+          LogStreamName: !Ref FirehoseLogStream
